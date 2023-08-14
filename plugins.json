@@ -1,7 +1,7 @@
 [
    {
         "name": "ChangeDataDirectory",
-        "version": "v1.0.0",
+        "version": "1.0.0",
         "author": "Pranav Purwar",
         "description": "Changes the directory where the IDE stores the data including projects, plugins, etc. to external storage.",
         "source": "https://github.com/Cosmic-Ide/ChangeDataDirectory"
