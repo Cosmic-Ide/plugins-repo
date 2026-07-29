@@ -9,8 +9,10 @@ import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
+import org.cosmicide.project.OperationMessageKind
 import org.cosmicide.project.OperationReporter
 import org.cosmicide.project.OperationUpdate
 import org.cosmicide.project.PluginFormField
@@ -41,6 +43,7 @@ class PythonPlugin : CosmicPlugin {
     )
 
     override fun activate(context: PluginContext) {
+        val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
         val processService = context.services.require(IdeServices.TOOL_PROCESS)
         val owner = context.descriptor.id
 
@@ -59,7 +62,7 @@ class PythonPlugin : CosmicPlugin {
             ),
             context.extensions.register(
                 point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = PythonProjectCreationProvider,
+                extension = PythonProjectCreationProvider(commandService),
                 ownerPluginId = owner,
                 priority = 350
             ),
@@ -183,7 +186,9 @@ private object PythonProjectTypeProvider : ProjectTypeProvider {
     }
 }
 
-private object PythonProjectCreationProvider : ProjectCreationProvider {
+private class PythonProjectCreationProvider(
+    private val commands: CommandExecutionService
+) : ProjectCreationProvider {
     override val id = "org.cosmicide.plugins.python.createProject"
     override val displayName = "New Python project"
     override val description = "Create a Python application or installable package"
@@ -235,6 +240,33 @@ private object PythonProjectCreationProvider : ProjectCreationProvider {
             } else {
                 createPackage(root, name)
             }
+
+            reporter.report(OperationUpdate("Creating project virtual environment…\n"))
+            val result = commands.execute(
+                CommandRequest(
+                    command = "python",
+                    arguments = listOf(
+                        "-m",
+                        "venv",
+                        "--system-site-packages",
+                        ".venv"
+                    ),
+                    workingDirectory = root
+                )
+            ) { output ->
+                reporter.report(
+                    OperationUpdate(
+                        message = output,
+                        kind = OperationMessageKind.OUTPUT
+                    )
+                )
+            }
+            if (!result.successful) {
+                error(
+                    result.output.lineSequence().lastOrNull { it.isNotBlank() }
+                        ?: "Could not create .venv (exit code ${result.exitCode})"
+                )
+            }
         } catch (error: Throwable) {
             root.deleteRecursively()
             throw error
@@ -242,7 +274,7 @@ private object PythonProjectCreationProvider : ProjectCreationProvider {
 
         return ProjectCreationResult(
             project = PythonProjectTypeProvider.project(root),
-            message = "Python project created successfully"
+            message = "Python project and .venv created successfully"
         )
     }
 
@@ -449,11 +481,10 @@ private val PYTHON_PROJECT_MARKERS = setOf(
 private const val PYTHON_INSTALL_COMMAND =
     "pacman -S --needed python python-lsp-server python-lsp-black ruff python-pytest python-build python-pip"
 private const val PYTHON_TEXTMATE_GRAMMAR =
-    "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/python/syntaxes/MagicPython.tmLanguage.json"
+    "https://raw.githubusercontent.com/microsoft/vscode/refs/heads/main/extensions/python/syntaxes/MagicPython.tmLanguage.json"
 private val PYTHON_APPLICATION_TEMPLATE = """
     def main() -> None:
         print("Hello, Python!")
-
 
     if __name__ == "__main__":
         main()

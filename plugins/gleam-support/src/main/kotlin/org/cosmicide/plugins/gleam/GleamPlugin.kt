@@ -38,7 +38,7 @@ class GleamPlugin : CosmicPlugin {
             id = "org.cosmicide.plugins.gleam.installToolchain",
             label = "Install Gleam",
             command = GLEAM_INSTALL_COMMAND,
-            description = "Install Gleam in Cosmic's private environment."
+            description = "Install the Gleam compiler and language server."
         )
     )
 

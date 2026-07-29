@@ -4,54 +4,54 @@
     "name": "Rust Support",
     "version": "1.0.0",
     "author": "Cosmic IDE",
-    "description": "Rust language support powered by rust-analyzer and Cargo.",
-    "detailedDescription": "## Rust development in Cosmic\n\nRust Support turns Cosmic IDE into a focused Rust workspace while keeping the tooling inside Cosmic's private Arch environment.\n\n### Included features\n\n- Code intelligence, diagnostics, completion, and navigation through **rust-analyzer**\n- Automatic detection of Cargo projects\n- Cargo binary and library project creation\n- Commands for `cargo fetch`, `check`, `build`, `run`, and `test`\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Rust, Cargo, and rust-analyzer. Open any project containing a `Cargo.toml` file and Cosmic will recognize it automatically.\n\n> The setup command runs only after you confirm the interactive terminal handoff.",
+    "description": "Rust code intelligence, Cargo project creation, and essential build, run, and test workflows.",
+    "detailedDescription": "## Rust development\n\nBuild and maintain Cargo projects with rust-analyzer code intelligence and integrated Cargo workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, and inline assistance from **rust-analyzer**\n- Automatic detection of projects containing `Cargo.toml`\n- Binary and library project templates\n- Cargo actions for fetching dependencies, checking, building, running, and testing\n\n### Setup\n\nAfter installation, run **Install Rust toolchain** once. Existing Cargo projects are recognized when you open their project directory.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/rust-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/rust-support-1.0.0.zip",
-    "sha256": "79d91694638b2b0aff7f1b3f1116218a59429e0793c182d2e4ff90b64cc0cc59"
+    "sha256": "08f90941732f7c4f4634c7dd2fe311e02808da17672e566d2c0bcb0d6c8980cd"
   },
   {
     "id": "org.cosmicide.plugins.gleam",
     "name": "Gleam Support",
     "version": "1.0.0",
     "author": "Cosmic IDE",
-    "description": "Gleam language support powered by gleam lsp and the Gleam toolchain.",
-    "detailedDescription": "## Gleam development in Cosmic\n\nGleam Support turns Cosmic IDE into a focused Gleam workspace while keeping the tooling inside Cosmic's private Arch environment.\n\n### Included features\n\n- Code intelligence, diagnostics, completion, and navigation through **gleam lsp**\n- Automatic detection of Gleam projects\n- Erlang- and JavaScript-targeted project creation\n- Commands for building, running, formatting, dependency management, documentation, exporting, and publishing\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Gleam. Open any project containing a `gleam.toml` file and Cosmic will recognize it automatically.",
+    "description": "Gleam code intelligence, project templates, and complete build and package workflows.",
+    "detailedDescription": "## Gleam development\n\nCreate and maintain Gleam applications and libraries with language intelligence and integrated Gleam tooling.\n\n### Features\n\n- Completion, diagnostics, navigation, and inline assistance from **gleam lsp**\n- Automatic detection of projects containing `gleam.toml`\n- Project templates for Erlang and JavaScript targets\n- Actions for checking, compiling, running, testing, formatting, and dependency updates\n- Organized workflows for documentation, exports, fixes, and package publishing\n\n### Setup\n\nAfter installation, run **Install Gleam** once. Existing Gleam projects are recognized when you open their project directory.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gleam-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/gleam-support-1.0.0.zip",
-    "sha256": "d31d313dd4f20bce0e758271b30275ecf03ebede60cd376ff524179a9d294940"
+    "sha256": "a54735b01ea5805316f994d667ce7ca95faeaba0bf2abd0738384eec8ca647d3"
   },
   {
     "id": "org.cosmicide.plugins.go",
     "name": "Go Support",
     "version": "1.0.0",
     "author": "Cosmic IDE",
-    "description": "Go syntax highlighting, project support, and Go toolchain commands.",
-    "detailedDescription": "## Go development in Cosmic\n\nGo Support adds lightweight Go editing and project tooling while keeping the toolchain inside Cosmic's private Arch environment.\n\n### Included features\n\n- Go syntax highlighting through a cached TextMate grammar\n- Automatic detection of Go modules and workspaces\n- Application and library module creation\n- Commands for building, running, testing, formatting, vetting, dependency management, and maintenance\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Go. Open any project containing a `go.mod` or `go.work` file and Cosmic will recognize it automatically.",
+    "description": "Go syntax highlighting, module templates, and build, run, test, and dependency workflows.",
+    "detailedDescription": "## Go development\n\nWork with Go modules and workspaces using syntax highlighting, project templates, and integrated Go commands.\n\n### Features\n\n- TextMate syntax highlighting for `.go` files\n- Automatic detection of `go.mod` modules and `go.work` workspaces\n- Application and library project templates\n- Actions for building, running, testing, formatting, and vetting packages\n- Organized module, testing, and maintenance workflows\n\n### Setup\n\nAfter installation, run **Install Go** once. Existing modules and workspaces are recognized when you open their project directory.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/go-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/go-support-1.0.0.zip",
-    "sha256": "78a3cf3136418376ba26d3db2f50890a6223abfaf307c9033eeb2d8c69d2a27d"
+    "sha256": "3147e3e529f5be3db4d683fd2dad0089abb960093bf432d9a2fb4183d0cd2dd8"
   },
   {
     "id": "org.cosmicide.plugins.lua",
     "name": "Lua Support",
     "version": "1.0.0",
     "author": "Cosmic IDE",
-    "description": "Lua language support powered by LuaLS and the Lua toolchain.",
-    "detailedDescription": "## Lua development in Cosmic\n\nLua Support adds a focused Lua workspace while keeping the toolchain inside Cosmic's private Arch environment.\n\n### Included features\n\n- Completion, diagnostics, navigation, annotations, and formatting through **LuaLS**\n- TextMate syntax highlighting for Lua files\n- Automatic detection and creation of Lua applications and modules\n- Commands for running Lua, checking syntax, formatting with StyLua, linting with Luacheck, and inspecting LuaRocks\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Lua, LuaLS, StyLua, LuaRocks, and Luacheck. Open a project containing Lua files or a `.luarc.json` configuration file and Cosmic will recognize it automatically.",
+    "description": "LuaLS code intelligence, Lua project templates, formatting, linting, and LuaRocks workflows.",
+    "detailedDescription": "## Lua development\n\nDevelop Lua applications and modules with LuaLS intelligence and a practical set of quality tools.\n\n### Features\n\n- Completion, diagnostics, navigation, annotations, and formatting from **LuaLS**\n- TextMate syntax highlighting for `.lua` files\n- Application and module project templates with LuaLS and StyLua configuration\n- Actions for running code, opening a REPL, checking syntax, formatting, and linting\n- LuaRocks dependency inspection\n\n### Setup\n\nAfter installation, run **Install Lua tools** once. Projects with Lua source files or `.luarc.json` configuration are recognized automatically.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/lua-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/lua-support-1.0.0.zip",
-    "sha256": "8999b145ad7adad113ad662201651a287abadd31c79d70c3fc1f3dc9f4f3f0f9"
+    "sha256": "256071aef8ddfc10b3f225afccdc7e32414b07b55886cb5a7956f2118d9835dd"
   },
   {
     "id": "org.cosmicide.plugins.python",
     "name": "Python Support",
     "version": "1.0.0",
     "author": "Cosmic IDE",
-    "description": "Python language support powered by python-lsp-server and focused development tools.",
-    "detailedDescription": "## Python development in Cosmic\n\nPython Support adds code intelligence and practical project tooling while keeping Python inside Cosmic's private Arch environment.\n\n### Included features\n\n- Completion, diagnostics, navigation, hover information, and formatting through **python-lsp-server**\n- TextMate syntax highlighting for Python files\n- Automatic detection and creation of Python applications and packages\n- Focused commands for running, testing, formatting, linting, building packages, and syncing declared dependencies\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Python, the language server, Ruff, pytest, and packaging tools. Open a Python project or create an application or package from Cosmic.",
+    "description": "Python code intelligence, isolated project creation, testing, formatting, linting, and packaging.",
+    "detailedDescription": "## Python development\n\nBuild Python applications and packages with language intelligence, isolated environments, and focused development workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, hover information, and formatting from **python-lsp-server**\n- TextMate syntax highlighting for `.py` and `.pyi` files\n- Application and installable-package templates with an automatically created project-local `.venv`\n- Context-aware actions for running applications, testing with pytest, formatting and linting with Ruff, and building distributions\n- Dependency installation into the project virtual environment when requirements or package metadata are present\n\n### Setup\n\nAfter installation, run **Install Python tools** once. Existing Python projects are detected from common project files or Python source files.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/python-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/python-support-1.0.0.zip",
-    "sha256": "22c1a317a139a2d0fd96c116d289f8fb1eb8ab6c03deaeeeb7e1b701dc3df737"
+    "sha256": "5c0ecd793c50163a9d45a340b3d19dc6aaeee15ecd2b75b92f27e9b488fa3ea2"
   }
 ]

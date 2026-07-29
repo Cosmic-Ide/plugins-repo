@@ -3,8 +3,8 @@
   "name": "Python Support",
   "version": "1.0.0",
   "entryClass": "org.cosmicide.plugins.python.PythonPlugin",
-  "description": "Python language support powered by python-lsp-server and focused development tools.",
-  "detailedDescription": "## Python development in Cosmic\n\nPython Support adds code intelligence and practical project tooling while keeping Python inside Cosmic's private Arch environment.\n\n### Included features\n\n- Completion, diagnostics, navigation, hover information, and formatting through **python-lsp-server**\n- TextMate syntax highlighting for Python files\n- Automatic detection and creation of Python applications and packages\n- Focused commands for running, testing, formatting, linting, building packages, and syncing declared dependencies\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Python, the language server, Ruff, pytest, and packaging tools. Open a Python project or create an application or package from Cosmic.",
+  "description": "Python code intelligence, isolated project creation, testing, formatting, linting, and packaging.",
+  "detailedDescription": "## Python development\n\nBuild Python applications and packages with language intelligence, isolated environments, and focused development workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, hover information, and formatting from **python-lsp-server**\n- TextMate syntax highlighting for `.py` and `.pyi` files\n- Application and installable-package templates with an automatically created project-local `.venv`\n- Context-aware actions for running applications, testing with pytest, formatting and linting with Ruff, and building distributions\n- Dependency installation into the project virtual environment when requirements or package metadata are present\n\n### Setup\n\nAfter installation, run **Install Python tools** once. Existing Python projects are detected from common project files or Python source files.",
   "author": "Cosmic IDE",
   "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/python-support",
   "classPath": [

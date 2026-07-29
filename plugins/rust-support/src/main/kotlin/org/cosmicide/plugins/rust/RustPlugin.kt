@@ -38,7 +38,7 @@ class RustPlugin : CosmicPlugin {
             id = "org.cosmicide.plugins.rust.installToolchain",
             label = "Install Rust toolchain",
             command = RUST_INSTALL_COMMAND,
-            description = "Install Rust, Cargo, GCC, and rust-analyzer in Cosmic's private environment."
+            description = "Install Rust, Cargo, GCC, and rust-analyzer."
         )
     )
 

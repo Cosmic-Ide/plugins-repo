@@ -39,7 +39,7 @@ class GoPlugin : CosmicPlugin {
             id = "org.cosmicide.plugins.go.installToolchain",
             label = "Install Go",
             command = GO_INSTALL_COMMAND,
-            description = "Install Go in Cosmic's private environment."
+            description = "Install the Go compiler and toolchain."
         )
     )
 
