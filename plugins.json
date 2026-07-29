@@ -33,14 +33,14 @@
     "sha256": "78a3cf3136418376ba26d3db2f50890a6223abfaf307c9033eeb2d8c69d2a27d"
   },
   {
-    "id": "org.cosmicide.plugins.elixir",
-    "name": "Elixir Support",
+    "id": "org.cosmicide.plugins.lua",
+    "name": "Lua Support",
     "version": "1.0.0",
     "author": "Cosmic IDE",
-    "description": "Elixir language support powered by Expert and the Mix toolchain.",
-    "detailedDescription": "## Elixir development in Cosmic\n\nElixir Support turns Cosmic IDE into a focused Elixir workspace while keeping the tooling inside Cosmic's private Arch environment.\n\n### Included features\n\n- Code intelligence, diagnostics, completion, and navigation through **Expert**, the official Elixir language server\n- TextMate highlighting for Elixir, EEx, and HEEx files\n- Automatic detection and creation of Mix projects\n- Commands for compiling, running, testing, formatting, and dependency management\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Elixir and Expert. Open any project containing a `mix.exs` file and Cosmic will recognize it automatically.",
-    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/elixir-support",
-    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/elixir-support-1.0.0.zip",
-    "sha256": "b8b2430192392c97ed9c5fed420e1458493f5d281500a83e6725e779d94ac38c"
+    "description": "Lua language support powered by LuaLS and the Lua toolchain.",
+    "detailedDescription": "## Lua development in Cosmic\n\nLua Support adds a focused Lua workspace while keeping the toolchain inside Cosmic's private Arch environment.\n\n### Included features\n\n- Completion, diagnostics, navigation, annotations, and formatting through **LuaLS**\n- TextMate syntax highlighting for Lua files\n- Automatic detection and creation of Lua applications and modules\n- Commands for running Lua, checking syntax, formatting with StyLua, linting with Luacheck, and inspecting LuaRocks\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Lua, LuaLS, StyLua, LuaRocks, and Luacheck. Open a project containing Lua files or a `.luarc.json` configuration file and Cosmic will recognize it automatically.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/lua-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/lua-support-1.0.0.zip",
+    "sha256": "8999b145ad7adad113ad662201651a287abadd31c79d70c3fc1f3dc9f4f3f0f9"
   }
 ]

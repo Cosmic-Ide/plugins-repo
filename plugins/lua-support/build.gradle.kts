@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "org.cosmicide.plugins.elixir"
+    namespace = "org.cosmicide.plugins.lua"
     compileSdk {
         version = release(37) {
             minorApiLevel = 1
@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "org.cosmicide.plugins.elixir"
+        applicationId = "org.cosmicide.plugins.lua"
         minSdk = 28
         targetSdk = 37
         versionCode = 1

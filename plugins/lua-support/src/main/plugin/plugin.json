@@ -1,0 +1,19 @@
+{
+  "id": "org.cosmicide.plugins.lua",
+  "name": "Lua Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.lua.LuaPlugin",
+  "description": "Lua language support powered by LuaLS and the Lua toolchain.",
+  "detailedDescription": "## Lua development in Cosmic\n\nLua Support adds a focused Lua workspace while keeping the toolchain inside Cosmic's private Arch environment.\n\n### Included features\n\n- Completion, diagnostics, navigation, annotations, and formatting through **LuaLS**\n- TextMate syntax highlighting for Lua files\n- Automatic detection and creation of Lua applications and modules\n- Commands for running Lua, checking syntax, formatting with StyLua, linting with Luacheck, and inspecting LuaRocks\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Lua, LuaLS, StyLua, LuaRocks, and Luacheck. Open a project containing Lua files or a `.luarc.json` configuration file and Cosmic will recognize it automatically.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/lua-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "language-server",
+    "project-type",
+    "project-creation",
+    "project-commands"
+  ]
+}

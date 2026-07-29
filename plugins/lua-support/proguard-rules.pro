@@ -1,4 +1,4 @@
--keep class org.cosmicide.plugins.elixir.ElixirPlugin {
+-keep class org.cosmicide.plugins.lua.LuaPlugin {
     public <init>();
     public *;
 }
