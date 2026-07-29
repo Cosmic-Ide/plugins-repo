@@ -410,6 +410,11 @@ private val ELIXIR_FILE_EXTENSIONS = setOf("ex", "exs", "eex", "heex")
 private val ELIXIR_AND_EXPERT_INSTALL_COMMAND = """
     bash -c 'set -e
     pacman -S --needed elixir curl
+    if [ ! -f /usr/bin/mix.cosmic ]; then
+      cp /usr/bin/mix /usr/bin/mix.cosmic
+    fi
+    printf %s IyEvYmluL3NoCmV4ZWMgZWxpeGlyIC91c3IvYmluL21peC5jb3NtaWMgIiRAIgo= | base64 -d > /usr/bin/mix
+    chmod 755 /usr/bin/mix
     mix local.hex --force
     mix local.rebar --force
     case "${'$'}(uname -m)" in
@@ -423,7 +428,7 @@ private val ELIXIR_AND_EXPERT_INSTALL_COMMAND = """
     curl -fsSL "https://github.com/expert-lsp/expert/releases/latest/download/${'$'}expert_asset" -o "${'$'}expert_tmp/${'$'}expert_asset"
     curl -fsSL "https://github.com/expert-lsp/expert/releases/latest/download/expert_checksums.txt" -o "${'$'}expert_tmp/expert_checksums.txt"
     (cd "${'$'}expert_tmp" && sha256sum --check --ignore-missing expert_checksums.txt)
-    install -m 755 "${'$'}expert_tmp/${'$'}expert_asset" /usr/local/bin/expert'
+    install -m 755 "${'$'}expert_tmp/${'$'}expert_asset" /usr/bin/expert'
 """.trimIndent()
 private const val ELIXIR_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/elixir-lsp/vscode-elixir-ls/master/syntaxes/elixir.json"
