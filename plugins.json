@@ -20,5 +20,16 @@
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gleam-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/gleam-support-1.0.0.zip",
     "sha256": "d31d313dd4f20bce0e758271b30275ecf03ebede60cd376ff524179a9d294940"
+  },
+  {
+    "id": "org.cosmicide.plugins.go",
+    "name": "Go Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Go language support powered by gopls and the Go toolchain.",
+    "detailedDescription": "## Go development in Cosmic\n\nGo Support turns Cosmic IDE into a focused Go workspace while keeping the tooling inside Cosmic's private Arch environment.\n\n### Included features\n\n- Code intelligence, diagnostics, completion, navigation, and refactoring through **gopls**\n- Automatic detection of Go modules and workspaces\n- Application and library module creation\n- Commands for building, running, testing, formatting, vetting, dependency management, and maintenance\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Go and gopls. Open any project containing a `go.mod` or `go.work` file and Cosmic will recognize it automatically.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/go-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/go-support-1.0.0.zip",
+    "sha256": "409188a9dd739315e98a9d12db0dcb0413485af9afe1a61af9357464b1d8ac1c"
   }
 ]

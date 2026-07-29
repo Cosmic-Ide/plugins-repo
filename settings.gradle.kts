@@ -46,3 +46,4 @@ project(":ide-api").projectDir = cosmicIdeDir.resolve("ide-api")
 
 include(":plugins:rust-support")
 include(":plugins:gleam-support")
+include(":plugins:go-support")
