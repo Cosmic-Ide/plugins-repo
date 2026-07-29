@@ -16,6 +16,9 @@ in the repository index and the plugin's bundled `plugin.json` metadata.
 
 - **Rust Support** — rust-analyzer LSP integration, Cargo project creation/detection, and Cargo
   project commands.
+- **Clangd Support** — clangd code intelligence for C, C++, Objective-C, Objective-C++, and CUDA.
+- **CMake Support** — CMake project creation/detection and configure, build, test, install, and
+  clean commands.
 
 On its first install, Cosmic offers to open an interactive terminal running:
 
@@ -26,6 +29,9 @@ pacman -S --needed rust rust-analyzer gcc
 The package command runs only after the user confirms the terminal handoff.
 It is declared by `RustPlugin.setupActions`, keeping environment setup separate from the Cargo
 project creation form.
+
+Clangd Support installs the `clang` package. CMake Support remains independent and installs
+`cmake` and `make`; its configure commands export `compile_commands.json` for clangd.
 
 ## Build
 

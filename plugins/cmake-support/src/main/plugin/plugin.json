@@ -1,0 +1,18 @@
+{
+  "id": "org.cosmicide.plugins.cmake",
+  "name": "CMake Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.cmake.CMakePlugin",
+  "description": "CMake project templates, automatic detection, and configure, build, test, and install workflows.",
+  "detailedDescription": "## CMake development\n\nCreate and build C or C++ projects with integrated CMake and Make workflows.\n\n### Features\n\n- Automatic detection of projects containing `CMakeLists.txt`\n- C and C++ executable or library starter projects\n- Debug and release configuration with exported `compile_commands.json`\n- Commands for configuring, building, testing, installing, and cleaning projects\n- Generated Makefiles through CMake's Unix Makefiles generator\n\n### Setup\n\nAfter installation, run **Install CMake tools** once. Install Clangd Support separately for C-family code intelligence.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/cmake-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "project-type",
+    "project-creation",
+    "project-commands"
+  ]
+}

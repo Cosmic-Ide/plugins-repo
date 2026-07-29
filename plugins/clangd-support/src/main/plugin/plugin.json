@@ -1,0 +1,16 @@
+{
+  "id": "org.cosmicide.plugins.clangd",
+  "name": "Clangd Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.clangd.ClangdPlugin",
+  "description": "Clangd code intelligence for C, C++, Objective-C, Objective-C++, and CUDA sources.",
+  "detailedDescription": "## Clangd language support\n\nEdit C-family projects with fast, compiler-aware language intelligence from **clangd**.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, signature help, and inlay hints\n- C, C++, Objective-C, Objective-C++, and CUDA source and header support\n- Background indexing and clang-tidy diagnostics\n- Automatic use of `compile_commands.json` supplied by CMake and other build systems\n\n### Setup\n\nAfter installation, run **Install Clang tools** once. For the most accurate results, configure your build to generate a `compile_commands.json` file.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/clangd-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "language-server"
+  ]
+}
