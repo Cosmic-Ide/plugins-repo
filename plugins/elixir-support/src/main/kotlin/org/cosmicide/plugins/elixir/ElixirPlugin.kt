@@ -408,7 +408,7 @@ private object ElixirProjectCommandProvider : ProjectCommandProvider {
 
 private val ELIXIR_FILE_EXTENSIONS = setOf("ex", "exs", "eex", "heex")
 private val ELIXIR_AND_EXPERT_INSTALL_COMMAND = """
-    set -e
+    bash -c 'set -e
     pacman -S --needed elixir curl
     mix local.hex --force
     mix local.rebar --force
@@ -419,11 +419,11 @@ private val ELIXIR_AND_EXPERT_INSTALL_COMMAND = """
     esac
     expert_asset="expert_linux_${'$'}expert_arch"
     expert_tmp="${'$'}(mktemp -d)"
-    trap 'rm -rf "${'$'}expert_tmp"' EXIT
+    trap "rm -rf ${'$'}expert_tmp" EXIT
     curl -fsSL "https://github.com/expert-lsp/expert/releases/latest/download/${'$'}expert_asset" -o "${'$'}expert_tmp/${'$'}expert_asset"
     curl -fsSL "https://github.com/expert-lsp/expert/releases/latest/download/expert_checksums.txt" -o "${'$'}expert_tmp/expert_checksums.txt"
     (cd "${'$'}expert_tmp" && sha256sum --check --ignore-missing expert_checksums.txt)
-    install -m 755 "${'$'}expert_tmp/${'$'}expert_asset" /usr/local/bin/expert
+    install -m 755 "${'$'}expert_tmp/${'$'}expert_asset" /usr/local/bin/expert'
 """.trimIndent()
 private const val ELIXIR_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/elixir-lsp/vscode-elixir-ls/master/syntaxes/elixir.json"

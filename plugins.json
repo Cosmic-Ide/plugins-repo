@@ -41,6 +41,6 @@
     "detailedDescription": "## Elixir development in Cosmic\n\nElixir Support turns Cosmic IDE into a focused Elixir workspace while keeping the tooling inside Cosmic's private Arch environment.\n\n### Included features\n\n- Code intelligence, diagnostics, completion, and navigation through **Expert**, the official Elixir language server\n- TextMate highlighting for Elixir, EEx, and HEEx files\n- Automatic detection and creation of Mix projects\n- Commands for compiling, running, testing, formatting, and dependency management\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Elixir and Expert. Open any project containing a `mix.exs` file and Cosmic will recognize it automatically.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/elixir-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/elixir-support-1.0.0.zip",
-    "sha256": "6a91a99d7691e30754d2c418bdcca2fcb3cf43586978f8e678ed64944954f7bb"
+    "sha256": "f30acfeee1c781d4aa301f5e81868b2621de165413254b6085d0cb42df7c0cf3"
   }
 ]
