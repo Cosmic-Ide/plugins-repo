@@ -1,4 +1,4 @@
--keep class org.cosmicide.plugins.gleam.RustPlugin {
+-keep class org.cosmicide.plugins.rust.RustPlugin {
     public <init>();
     public *;
 }
