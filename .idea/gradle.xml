@@ -27,9 +27,10 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/plugins" />
-            <option value="$PROJECT_DIR$/plugins/elixir-support" />
             <option value="$PROJECT_DIR$/plugins/gleam-support" />
             <option value="$PROJECT_DIR$/plugins/go-support" />
+            <option value="$PROJECT_DIR$/plugins/lua-support" />
+            <option value="$PROJECT_DIR$/plugins/python-support" />
             <option value="$PROJECT_DIR$/plugins/rust-support" />
           </set>
         </option>

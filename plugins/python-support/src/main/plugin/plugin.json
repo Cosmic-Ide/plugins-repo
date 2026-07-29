@@ -1,0 +1,19 @@
+{
+  "id": "org.cosmicide.plugins.python",
+  "name": "Python Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.python.PythonPlugin",
+  "description": "Python language support powered by python-lsp-server and focused development tools.",
+  "detailedDescription": "## Python development in Cosmic\n\nPython Support adds code intelligence and practical project tooling while keeping Python inside Cosmic's private Arch environment.\n\n### Included features\n\n- Completion, diagnostics, navigation, hover information, and formatting through **python-lsp-server**\n- TextMate syntax highlighting for Python files\n- Automatic detection and creation of Python applications and packages\n- Focused commands for running, testing, formatting, linting, building packages, and syncing declared dependencies\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Python, the language server, Ruff, pytest, and packaging tools. Open a Python project or create an application or package from Cosmic.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/python-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "language-server",
+    "project-type",
+    "project-creation",
+    "project-commands"
+  ]
+}

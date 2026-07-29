@@ -42,5 +42,16 @@
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/lua-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/lua-support-1.0.0.zip",
     "sha256": "8999b145ad7adad113ad662201651a287abadd31c79d70c3fc1f3dc9f4f3f0f9"
+  },
+  {
+    "id": "org.cosmicide.plugins.python",
+    "name": "Python Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Python language support powered by python-lsp-server and focused development tools.",
+    "detailedDescription": "## Python development in Cosmic\n\nPython Support adds code intelligence and practical project tooling while keeping Python inside Cosmic's private Arch environment.\n\n### Included features\n\n- Completion, diagnostics, navigation, hover information, and formatting through **python-lsp-server**\n- TextMate syntax highlighting for Python files\n- Automatic detection and creation of Python applications and packages\n- Focused commands for running, testing, formatting, linting, building packages, and syncing declared dependencies\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Python, the language server, Ruff, pytest, and packaging tools. Open a Python project or create an application or package from Cosmic.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/python-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/python-support-1.0.0.zip",
+    "sha256": "22c1a317a139a2d0fd96c116d289f8fb1eb8ab6c03deaeeeb7e1b701dc3df737"
   }
 ]
