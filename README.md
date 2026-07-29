@@ -3,6 +3,15 @@
 This repository contains dynamically installable plugins for Cosmic IDE and the public
 `plugins.json` index consumed by **Settings > Extensions > Plugins**.
 
+Each marketplace entry provides two levels of copy:
+
+- `description` is a concise, plain-text summary used on search result cards.
+- `detailedDescription` is the full extension detail page and supports Markdown.
+
+Keep the short description to roughly one sentence. The detailed description can use headings, lists,
+links, inline code, code blocks, and other standard Markdown. For consistency, include both fields
+in the repository index and the plugin's bundled `plugin.json` metadata.
+
 ## Included plugins
 
 - **Rust Support** — rust-analyzer LSP integration, Cargo project creation/detection, and Cargo
@@ -11,10 +20,12 @@ This repository contains dynamically installable plugins for Cosmic IDE and the 
 On its first install, Cosmic offers to open an interactive terminal running:
 
 ```sh
-pacman -S --needed rust rust-analyzer
+pacman -S --needed rust rust-analyzer gcc
 ```
 
 The package command runs only after the user confirms the terminal handoff.
+It is declared by `RustPlugin.setupActions`, keeping environment setup separate from the Cargo
+project creation form.
 
 ## Build
 

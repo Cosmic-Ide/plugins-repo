@@ -8,6 +8,7 @@ import org.cosmicide.editor.LspServerRequest
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
+import org.cosmicide.plugin.api.PluginSetupAction
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -26,13 +27,21 @@ import org.cosmicide.project.ProjectCreationRequest
 import org.cosmicide.project.ProjectCreationResult
 import org.cosmicide.project.ProjectExtensionPoints
 import org.cosmicide.project.ProjectTypeProvider
-import org.cosmicide.project.TerminalAction
 import org.cosmicide.project.ToolProcessService
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
 class RustPlugin : CosmicPlugin {
+    override val setupActions = listOf(
+        PluginSetupAction(
+            id = "org.cosmicide.plugins.rust.installToolchain",
+            label = "Install Rust toolchain",
+            command = RUST_INSTALL_COMMAND,
+            description = "Install Rust, Cargo, GCC, and rust-analyzer in Cosmic's private environment."
+        )
+    )
+
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
         val processService = context.services.require(IdeServices.TOOL_PROCESS)
@@ -202,15 +211,6 @@ private class RustProjectCreationProvider(
         )
     )
 
-    override val setupActions = listOf(
-        TerminalAction(
-            id = "org.cosmicide.plugins.rust.installToolchain",
-            label = "Install Rust toolchain",
-            command = RUST_INSTALL_COMMAND,
-            description = "Installs Rust, Cargo, and rust-analyzer with pacman."
-        )
-    )
-
     override suspend fun create(
         request: ProjectCreationRequest,
         reporter: OperationReporter
@@ -317,6 +317,6 @@ private object RustProjectCommandProvider : ProjectCommandProvider {
     }
 }
 
-private const val RUST_INSTALL_COMMAND = "pacman -S --needed rust rust-analyzer"
+private const val RUST_INSTALL_COMMAND = "pacman -S --needed rust rust-analyzer gcc"
 private const val RUST_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/rust/syntaxes/rust.tmLanguage.json"

@@ -4,11 +4,10 @@
     "name": "Rust Support",
     "version": "1.0.0",
     "author": "Cosmic IDE",
-    "description": "Rust editing with rust-analyzer, Cargo project creation, project detection, and Cargo commands.",
+    "description": "Rust language support powered by rust-analyzer and Cargo.",
+    "detailedDescription": "## Rust development in Cosmic\n\nRust Support turns Cosmic IDE into a focused Rust workspace while keeping the tooling inside Cosmic's private Arch environment.\n\n### Included features\n\n- Code intelligence, diagnostics, completion, and navigation through **rust-analyzer**\n- Automatic detection of Cargo projects\n- Cargo binary and library project creation\n- Commands for `cargo fetch`, `check`, `build`, `run`, and `test`\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Rust, Cargo, and rust-analyzer. Open any project containing a `Cargo.toml` file and Cosmic will recognize it automatically.\n\n> The setup command runs only after you confirm the interactive terminal handoff.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/rust-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/rust-support-1.0.0.zip",
-    "sha256": "f2384adf435e805b92f46d7086ded5a0e1547e1850d0cd154a9b8f856a7bc1e2",
-    "setupCommand": "pacman -S --needed rust rust-analyzer",
-    "setupDescription": "Install the Rust compiler, Cargo, standard tools, and rust-analyzer in Cosmic's private Arch environment."
+    "sha256": "f8f3c5281b60fbe92152c630105be5614c168ec89c30dfd49f39dcc9d75b4f28"
   }
 ]
