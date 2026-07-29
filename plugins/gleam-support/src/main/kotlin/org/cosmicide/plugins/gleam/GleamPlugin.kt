@@ -313,13 +313,6 @@ private object GleamProjectCommandProvider : ProjectCommandProvider {
                 label = "Dependencies",
                 children = listOf(
                     command(
-                        name = "deps.download",
-                        command = "gleam deps download",
-                        label = "Download",
-                        description = "Download all dependency packages",
-                        kind = ProjectCommandKind.SYNC
-                    ),
-                    command(
                         name = "deps.update",
                         command = "gleam update",
                         label = "Update",
@@ -416,10 +409,6 @@ private object GleamProjectCommandProvider : ProjectCommandProvider {
                         name = "publish",
                         description = "Publish the package to Hex"
                     ),
-                    command(
-                        name = "compile-package",
-                        description = "Run Gleam's low-level package compiler"
-                    )
                 )
             )
         )
