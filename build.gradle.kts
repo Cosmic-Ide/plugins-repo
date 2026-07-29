@@ -1,3 +1,5 @@
+import org.cosmicide.buildlogic.CosmicPluginPackagingPlugin
+
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -7,6 +9,6 @@ plugins {
 
 subprojects {
     if (path.startsWith(":plugins:")) {
-        apply(plugin = "org.cosmicide.plugin-packaging")
+        apply<CosmicPluginPackagingPlugin>()
     }
 }

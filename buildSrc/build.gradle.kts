@@ -7,12 +7,3 @@ repositories {
     google()
     mavenCentral()
 }
-
-gradlePlugin {
-    plugins {
-        create("cosmicPluginPackaging") {
-            id = "org.cosmicide.plugin-packaging"
-            implementationClass = "org.cosmicide.buildlogic.CosmicPluginPackagingPlugin"
-        }
-    }
-}
