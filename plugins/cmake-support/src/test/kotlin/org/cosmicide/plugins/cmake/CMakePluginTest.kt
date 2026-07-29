@@ -3,6 +3,8 @@ package org.cosmicide.plugins.cmake
 import java.io.File
 import kotlin.io.path.createTempDirectory
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CMakePluginTest {
@@ -47,6 +49,15 @@ class CMakePluginTest {
                 cmakeExecutableTargets(root).map(CMakeExecutableTarget::name)
             )
         }
+    }
+
+    @Test
+    fun runCommandChecksWhetherCandidatesAreExecutable() {
+        val command = cmakeBuildAndRunCommand("myprogram")
+
+        assertTrue(command.contains("""[ -x "${'$'}candidate" ]"""))
+        assertTrue(command.contains("""\( -type f -o -type l \)"""))
+        assertFalse(command.contains("-perm -111"))
     }
 
     private fun withProject(block: (File) -> Unit) {

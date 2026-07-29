@@ -256,14 +256,14 @@ private object CMakeProjectCommandProvider : ProjectCommandProvider {
                     children = listOf(
                         command(
                             name = "configure.debug",
-                            command = configureCommand("Debug"),
+                            command = cmakeConfigureCommand("Debug"),
                             label = "Debug",
                             description = "Configure a Debug build",
                             kind = ProjectCommandKind.SYNC
                         ),
                         command(
                             name = "configure.release",
-                            command = configureCommand("Release"),
+                            command = cmakeConfigureCommand("Release"),
                             label = "Release",
                             description = "Configure an optimized Release build",
                             kind = ProjectCommandKind.SYNC
@@ -288,7 +288,7 @@ private object CMakeProjectCommandProvider : ProjectCommandProvider {
                         children = executableTargets.map { target ->
                             command(
                                 name = "run.${target.commandId}",
-                                command = buildAndRunCommand(target.name),
+                                command = cmakeBuildAndRunCommand(target.name),
                                 label = target.name,
                                 description = "Build and run the ${target.name} executable",
                                 kind = ProjectCommandKind.RUN
@@ -332,22 +332,6 @@ private object CMakeProjectCommandProvider : ProjectCommandProvider {
         }
     }
 
-    private fun configureCommand(buildType: String): String {
-        return "cmake -S . -B build -G \"Unix Makefiles\" " +
-            "-DCMAKE_BUILD_TYPE=$buildType -DCMAKE_EXPORT_COMPILE_COMMANDS=ON " +
-            "&& ln -sf build/compile_commands.json compile_commands.json"
-    }
-
-    private fun buildAndRunCommand(target: String): String {
-        return "if [ ! -f build/CMakeCache.txt ]; then ${configureCommand("Debug")}; fi && " +
-            "cmake --build build --target '$target' --parallel && " +
-            "executable=\"\$(find build -type f -name '$target' -perm -111 " +
-            "! -path '*/CMakeFiles/*' | head -n 1)\" && " +
-            "if [ -z \"\$executable\" ]; then " +
-            "echo 'Built $target but could not locate its executable.' >&2; exit 1; fi && " +
-            "\"\$executable\""
-    }
-
     private fun command(
         name: String,
         command: String,
@@ -361,6 +345,23 @@ private object CMakeProjectCommandProvider : ProjectCommandProvider {
         description = description,
         kind = kind
     )
+}
+
+private fun cmakeConfigureCommand(buildType: String): String {
+    return "cmake -S . -B build -G \"Unix Makefiles\" " +
+        "-DCMAKE_BUILD_TYPE=$buildType -DCMAKE_EXPORT_COMPILE_COMMANDS=ON " +
+        "&& ln -sf build/compile_commands.json compile_commands.json"
+}
+
+internal fun cmakeBuildAndRunCommand(target: String): String {
+    return "if [ ! -f build/CMakeCache.txt ]; then ${cmakeConfigureCommand("Debug")}; fi && " +
+        "cmake --build build --target '$target' --parallel && " +
+        "executable=\"\$(find build \\( -type f -o -type l \\) -name '$target' " +
+        "! -path '*/CMakeFiles/*' | while IFS= read -r candidate; do " +
+        "if [ -x \"\$candidate\" ]; then printf '%s\\n' \"\$candidate\"; break; fi; done)\" && " +
+        "if [ -z \"\$executable\" ]; then " +
+        "echo 'Built $target but could not locate its executable.' >&2; exit 1; fi && " +
+        "\"\$executable\""
 }
 
 internal data class CMakeExecutableTarget(
