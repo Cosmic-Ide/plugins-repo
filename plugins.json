@@ -1,9 +1,14 @@
 [
-   {
-        "name": "ChangeDataDirectory",
-        "version": "1.0.0",
-        "author": "Pranav Purwar",
-        "description": "Changes the directory where the IDE stores the data including projects, plugins, etc. to external storage.",
-        "source": "https://github.com/Cosmic-Ide/ChangeDataDirectory"
-   }
+  {
+    "id": "org.cosmicide.plugins.rust",
+    "name": "Rust Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Rust editing with rust-analyzer, Cargo project creation, project detection, and Cargo commands.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/rust-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/rust-support-1.0.0.zip",
+    "sha256": "f2384adf435e805b92f46d7086ded5a0e1547e1850d0cd154a9b8f856a7bc1e2",
+    "setupCommand": "pacman -S --needed rust rust-analyzer",
+    "setupDescription": "Install the Rust compiler, Cargo, standard tools, and rust-analyzer in Cosmic's private Arch environment."
+  }
 ]

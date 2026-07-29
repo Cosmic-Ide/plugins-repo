@@ -1,0 +1,18 @@
+{
+  "id": "org.cosmicide.plugins.rust",
+  "name": "Rust Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.rust.RustPlugin",
+  "description": "Rust editing with rust-analyzer and Cargo project support.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/rust-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "language-server",
+    "project-type",
+    "project-creation",
+    "project-commands"
+  ]
+}

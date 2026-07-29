@@ -1,0 +1,35 @@
+name: Build plugins
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: Cosmic-Ide/Cosmic-IDE
+          path: Cosmic-IDE
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-37.1" "build-tools;37.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Rust plugin
+        run: ./gradlew :plugins:rust-support:packageProdReleasePlugin -PcosmicIdeDir="$GITHUB_WORKSPACE/Cosmic-IDE"
+      - name: Verify repository checksum
+        run: |
+          expected="$(jq -r '.[] | select(.id == "org.cosmicide.plugins.rust") | .sha256' plugins.json)"
+          actual="$(sha256sum artifacts/rust-support-1.0.0.zip | cut -d ' ' -f 1)"
+          test "$actual" = "$expected"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rust-support
+          path: artifacts/rust-support-1.0.0.zip
