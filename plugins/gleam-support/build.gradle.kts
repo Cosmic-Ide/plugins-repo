@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "org.cosmicide.plugins.rust"
+    namespace = "org.cosmicide.plugins.gleam"
     compileSdk {
         version = release(37) {
             minorApiLevel = 1
@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "org.cosmicide.plugins.rust"
+        applicationId = "org.cosmicide.plugins.gleam"
         minSdk = 28
         targetSdk = 37
         versionCode = 1

@@ -22,14 +22,27 @@ jobs:
       - name: Install Android SDK
         run: sdkmanager "platforms;android-37.1" "build-tools;37.0.0"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Build Rust plugin
-        run: ./gradlew :plugins:rust-support:packageProdReleasePlugin -PcosmicIdeDir="$GITHUB_WORKSPACE/Cosmic-IDE"
-      - name: Verify repository checksum
+      - name: Build plugin bundles
+        run: ./gradlew packageProdReleasePlugin -PcosmicIdeDir="$GITHUB_WORKSPACE/Cosmic-IDE"
+      - name: Verify committed checksums are current
+        run: git diff --exit-code -- plugins.json
+      - name: Verify plugin bundles
         run: |
-          expected="$(jq -r '.[] | select(.id == "org.cosmicide.plugins.rust") | .sha256' plugins.json)"
-          actual="$(sha256sum artifacts/rust-support-1.0.0.zip | cut -d ' ' -f 1)"
-          test "$actual" = "$expected"
+          while IFS=$'\t' read -r id download_url expected; do
+            bundle="artifacts/${download_url##*/}"
+            if [[ ! -f "$bundle" ]]; then
+              echo "::error title=Missing plugin bundle::$id expects $bundle"
+              exit 1
+            fi
+
+            actual="$(sha256sum "$bundle" | cut -d ' ' -f 1)"
+            if [[ "$actual" != "$expected" ]]; then
+              echo "::error title=Plugin checksum mismatch::$id expected $expected but got $actual"
+              exit 1
+            fi
+          done < <(jq -r '.[] | [.id, .downloadUrl, .sha256] | @tsv' plugins.json)
       - uses: actions/upload-artifact@v4
         with:
-          name: rust-support
-          path: artifacts/rust-support-1.0.0.zip
+          name: plugin-bundles
+          path: artifacts/*.zip
+          if-no-files-found: error

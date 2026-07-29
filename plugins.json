@@ -8,6 +8,17 @@
     "detailedDescription": "## Rust development in Cosmic\n\nRust Support turns Cosmic IDE into a focused Rust workspace while keeping the tooling inside Cosmic's private Arch environment.\n\n### Included features\n\n- Code intelligence, diagnostics, completion, and navigation through **rust-analyzer**\n- Automatic detection of Cargo projects\n- Cargo binary and library project creation\n- Commands for `cargo fetch`, `check`, `build`, `run`, and `test`\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Rust, Cargo, and rust-analyzer. Open any project containing a `Cargo.toml` file and Cosmic will recognize it automatically.\n\n> The setup command runs only after you confirm the interactive terminal handoff.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/rust-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/rust-support-1.0.0.zip",
-    "sha256": "f8f3c5281b60fbe92152c630105be5614c168ec89c30dfd49f39dcc9d75b4f28"
+    "sha256": "0aae048acfd5a0dc0c04d9885a3d5836578333b4e593bef0d2b1646c62ab6795"
+  },
+  {
+    "id": "org.cosmicide.plugins.gleam",
+    "name": "Gleam Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Gleam language support powered by gleam lsp and the Gleam toolchain.",
+    "detailedDescription": "## Gleam development in Cosmic\n\nGleam Support turns Cosmic IDE into a focused Gleam workspace while keeping the tooling inside Cosmic's private Arch environment.\n\n### Included features\n\n- Code intelligence, diagnostics, completion, and navigation through **gleam lsp**\n- Automatic detection of Gleam projects\n- Erlang- and JavaScript-targeted project creation\n- Commands for building, running, formatting, dependency management, documentation, exporting, and publishing\n\n### Getting started\n\nInstall the extension, then choose **Run setup** to install Gleam. Open any project containing a `gleam.toml` file and Cosmic will recognize it automatically.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gleam-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/gleam-support-1.0.0.zip",
+    "sha256": "4daf27642ddce01e230480645f6d1d25f7c304dc5566b036f773e6487dafcf84"
   }
 ]

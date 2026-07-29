@@ -20,7 +20,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "CosmicIDEPlugins"
 
-val cosmicIdeDir = providers.gradleProperty("cosmicIdeDir")
+val cosmicIdeDir: File = providers.gradleProperty("cosmicIdeDir")
     .orElse(providers.environmentVariable("COSMIC_IDE_DIR"))
     .orElse("../Cosmic-IDE")
     .get()
@@ -45,3 +45,4 @@ include(":ide-api")
 project(":ide-api").projectDir = cosmicIdeDir.resolve("ide-api")
 
 include(":plugins:rust-support")
+include(":plugins:gleam-support")
