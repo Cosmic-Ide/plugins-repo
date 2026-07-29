@@ -1,13 +1,14 @@
 package org.cosmicide.plugins.go
 
 import org.cosmicide.editor.EditorExtensionPoints
-import org.cosmicide.editor.LspServerConnection
-import org.cosmicide.editor.LspServerDefinition
-import org.cosmicide.editor.LspServerProvider
-import org.cosmicide.editor.LspServerRequest
+import org.cosmicide.editor.EditorLanguageProvider
+import org.cosmicide.editor.EditorLanguageRequest
+import io.github.rosemoe.sora.langs.textmate.TextMateLanguage
+import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry
+import io.github.rosemoe.sora.langs.textmate.registry.ThemeRegistry
+import io.github.rosemoe.sora.langs.textmate.registry.model.DefaultGrammarDefinition
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
-import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
@@ -27,10 +28,10 @@ import org.cosmicide.project.ProjectCreationRequest
 import org.cosmicide.project.ProjectCreationResult
 import org.cosmicide.project.ProjectExtensionPoints
 import org.cosmicide.project.ProjectTypeProvider
-import org.cosmicide.project.ToolProcessService
+import org.eclipse.tm4e.core.registry.IGrammarSource
+import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.InputStream
-import java.io.OutputStream
+import java.net.URL
 
 class GoPlugin : CosmicPlugin {
     override val setupActions = listOf(
@@ -38,19 +39,18 @@ class GoPlugin : CosmicPlugin {
             id = "org.cosmicide.plugins.go.installToolchain",
             label = "Install Go",
             command = GO_INSTALL_COMMAND,
-            description = "Install Go and gopls in Cosmic's private environment."
+            description = "Install Go in Cosmic's private environment."
         )
     )
 
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
-        val processService = context.services.require(IdeServices.TOOL_PROCESS)
         val owner = context.descriptor.id
 
         listOf(
             context.extensions.register(
-                point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
-                extension = GoLanguageServerProvider(processService, context.logger),
+                point = EditorExtensionPoints.LANGUAGE_PROVIDER,
+                extension = GoTextMateLanguageProvider,
                 ownerPluginId = owner,
                 priority = 350
             ),
@@ -74,97 +74,75 @@ class GoPlugin : CosmicPlugin {
             )
         ).forEach(context::registerDisposable)
 
-        context.logger.info("Go language, module, and workspace support registered")
+        context.logger.info("Go syntax, module, and workspace support registered")
     }
 }
 
-private class GoLanguageServerProvider(
-    private val processes: ToolProcessService,
-    private val logger: PluginLogger
-) : LspServerProvider {
-    override val id = "org.cosmicide.plugins.go.lsp"
-    override val displayName = "Go language support"
-    override val description = "Go editing powered by gopls"
+private object GoTextMateLanguageProvider : EditorLanguageProvider {
+    override val id = "org.cosmicide.plugins.go.textmate"
+    override val displayName = "Go syntax highlighting"
+    override val description = "Go syntax highlighting powered by a TextMate grammar"
     override val priority = 350
 
-    override fun supports(request: LspServerRequest): Boolean {
-        return request.extension.equals("go", ignoreCase = true)
+    override fun supports(request: EditorLanguageRequest): Boolean {
+        return request.file.extension.equals("go", ignoreCase = true)
     }
 
-    override fun createDefinition(request: LspServerRequest): LspServerDefinition {
-        return LspServerDefinition(
-            id = id,
-            fileExtensions = setOf("go"),
-            displayName = "gopls",
-            connectionFactory = {
-                GoLanguageServerConnection(processes, it, logger)
-            },
-            textMateGrammarLink = GO_TEXTMATE_GRAMMAR,
-            enableInlayHints = true,
-            enableSignatureHelp = true,
-            initializationTimeoutMillis = 120_000
-        )
-    }
-}
-
-private class GoLanguageServerConnection(
-    private val processes: ToolProcessService,
-    private val request: LspServerRequest,
-    private val logger: PluginLogger
-) : LspServerConnection {
-    @Volatile
-    private var process: Process? = null
-
-    @Synchronized
-    override fun start() {
-        check(process == null) { "gopls connection has already started" }
-        process = processes.start(
-            CommandRequest(
-                command = "gopls",
-                workingDirectory = request.project.root,
-                environment = mapOf(
-                    "COSMIC_PROJECT_ROOT" to request.project.root.absolutePath
-                )
-            ),
-            redirectErrorStream = false
-        ).also { started ->
-            drainStderr(started.errorStream)
-            logger.info("gopls started for ${request.project.name}")
+    override fun configure(request: EditorLanguageRequest): Boolean {
+        val cacheFile = request.editor.context.cacheDir
+            .resolve(TEXTMATE_CACHE_DIRECTORY)
+            .also(File::mkdirs)
+            .resolve("go.tmLanguage.json")
+        val grammarText = if (cacheFile.isFile) {
+            cacheFile.readText()
+        } else {
+            downloadGrammar().also(cacheFile::writeText)
         }
+        val grammarSource = IGrammarSource.fromString(
+            IGrammarSource.ContentType.JSON,
+            grammarText.removePrefix("\uFEFF")
+        )
+        val grammarDefinition = DefaultGrammarDefinition.withGrammarSource(
+            grammarSource,
+            GO_TEXTMATE_SCOPE,
+            null
+        )
+        val themeRegistry = ThemeRegistry.getInstance()
+        val grammarRegistry = GrammarRegistry(GrammarRegistry.getInstance()).apply {
+            setTheme(themeRegistry.currentThemeModel)
+        }
+        request.editor.setEditorLanguage(
+            TextMateLanguage.create(
+                grammarDefinition,
+                grammarRegistry,
+                themeRegistry,
+                false
+            )
+        )
+        return true
     }
 
-    override val outputStream: OutputStream
-        get() = checkNotNull(process) { "gopls has not started" }.outputStream
-
-    override val inputStream: InputStream
-        get() = checkNotNull(process) { "gopls has not started" }.inputStream
-
-    override val isClosed: Boolean
-        get() = process?.isAlive != true
-
-    @Synchronized
-    override fun close() {
-        val running = process ?: return
-        process = null
-        runCatching { running.outputStream.close() }
-        runCatching { running.inputStream.close() }
-        runCatching { running.errorStream.close() }
-        if (running.isAlive) running.destroy()
-    }
-
-    private fun drainStderr(stderr: InputStream) {
-        Thread {
-            runCatching {
-                stderr.bufferedReader().useLines { lines ->
-                    lines.forEach(logger::debug)
+    private fun downloadGrammar(): String {
+        val connection = URL(GO_TEXTMATE_GRAMMAR).openConnection().apply {
+            connectTimeout = GRAMMAR_CONNECT_TIMEOUT_MILLIS
+            readTimeout = GRAMMAR_READ_TIMEOUT_MILLIS
+        }
+        return connection.getInputStream().use { input ->
+            val output = ByteArrayOutputStream()
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            var totalBytes = 0
+            while (true) {
+                val count = input.read(buffer)
+                if (count < 0) break
+                totalBytes += count
+                require(totalBytes <= MAX_GRAMMAR_BYTES) {
+                    "Go TextMate grammar is larger than the supported cache limit"
                 }
-            }.onFailure {
-                logger.warn("gopls stderr logger stopped", it)
+                output.write(buffer, 0, count)
             }
-        }.apply {
-            name = "Go-Language-Server-Stderr"
-            isDaemon = true
-            start()
+            output.toString(Charsets.UTF_8.name()).also {
+                require(it.isNotBlank()) { "Go TextMate grammar is empty" }
+            }
         }
     }
 }
@@ -482,9 +460,14 @@ private fun String.toGoPackageName(): String {
     return normalized.takeIf { it.firstOrNull()?.isLetter() == true } ?: "project"
 }
 
-private const val GO_INSTALL_COMMAND = "pacman -S --needed gcc-go gopls"
+private const val GO_INSTALL_COMMAND = "pacman -S --needed gcc-go"
 private const val GO_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/go/syntaxes/go.tmLanguage.json"
+private const val GO_TEXTMATE_SCOPE = "source.go"
+private const val TEXTMATE_CACHE_DIRECTORY = "textmate-grammar-cache"
+private const val MAX_GRAMMAR_BYTES = 5 * 1024 * 1024
+private const val GRAMMAR_CONNECT_TIMEOUT_MILLIS = 15_000
+private const val GRAMMAR_READ_TIMEOUT_MILLIS = 30_000
 private val GO_APPLICATION_TEMPLATE = """
     package main
 
