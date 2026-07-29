@@ -17,8 +17,8 @@ in the repository index and the plugin's bundled `plugin.json` metadata.
 - **Rust Support** — rust-analyzer LSP integration, Cargo project creation/detection, and Cargo
   project commands.
 - **Clangd Support** — clangd code intelligence for C, C++, Objective-C, Objective-C++, and CUDA.
-- **CMake Support** — CMake project creation/detection and configure, build, test, install, and
-  clean commands.
+- **CMake Support** — CMake project creation/detection and configure, build, run, test, install,
+  and clean commands.
 
 On its first install, Cosmic offers to open an interactive terminal running:
 

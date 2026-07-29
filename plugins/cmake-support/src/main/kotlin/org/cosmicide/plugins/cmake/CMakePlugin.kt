@@ -242,70 +242,110 @@ private object CMakeProjectCreationProvider : ProjectCreationProvider {
 private object CMakeProjectCommandProvider : ProjectCommandProvider {
     override val id = "org.cosmicide.plugins.cmake.commands"
     override val displayName = "CMake commands"
-    override val description = "Configure, build, test, install, and clean CMake projects"
+    override val description = "Configure, build, run, test, install, and clean CMake projects"
 
     override fun commands(project: Project): List<ProjectCommand> {
         if (!CMakeProjectTypeProvider.supports(project.root)) return emptyList()
 
-        return listOf(
-            ProjectCommand(
-                id = "$id.configure",
-                label = "Configure",
-                children = listOf(
-                    command(
-                        name = "configure.debug",
-                        command = configureCommand("Debug"),
-                        label = "Debug",
-                        description = "Configure a Debug build",
-                        kind = ProjectCommandKind.SYNC
-                    ),
-                    command(
-                        name = "configure.release",
-                        command = configureCommand("Release"),
-                        label = "Release",
-                        description = "Configure an optimized Release build",
-                        kind = ProjectCommandKind.SYNC
+        val executableTargets = cmakeExecutableTargets(project.root)
+        return buildList {
+            add(
+                ProjectCommand(
+                    id = "$id.configure",
+                    label = "Configure",
+                    children = listOf(
+                        command(
+                            name = "configure.debug",
+                            command = configureCommand("Debug"),
+                            label = "Debug",
+                            description = "Configure a Debug build",
+                            kind = ProjectCommandKind.SYNC
+                        ),
+                        command(
+                            name = "configure.release",
+                            command = configureCommand("Release"),
+                            label = "Release",
+                            description = "Configure an optimized Release build",
+                            kind = ProjectCommandKind.SYNC
+                        )
                     )
                 )
-            ),
-            command(
-                name = "build",
-                command = "cmake --build build --parallel",
-                label = "Build",
-                description = "Build the configured CMake project",
-                kind = ProjectCommandKind.BUILD
-            ),
-            command(
-                name = "test",
-                command = "ctest --test-dir build --output-on-failure",
-                label = "Run tests",
-                description = "Run tests registered with CTest"
-            ),
-            command(
-                name = "install",
-                command = "cmake --install build",
-                label = "Install",
-                description = "Install the configured project"
-            ),
-            command(
-                name = "clean",
-                command = "cmake --build build --target clean",
-                label = "Clean",
-                description = "Clean generated build outputs"
-            ),
-            command(
-                name = "version",
-                command = "cmake --version && make --version",
-                label = "Tool versions",
-                description = "Show the installed CMake and Make versions"
             )
-        )
+            add(
+                command(
+                    name = "build",
+                    command = "cmake --build build --parallel",
+                    label = "Build",
+                    description = "Build the configured CMake project",
+                    kind = ProjectCommandKind.BUILD
+                )
+            )
+            if (executableTargets.isNotEmpty()) {
+                add(
+                    ProjectCommand(
+                        id = "$id.run",
+                        label = "Build and run",
+                        children = executableTargets.map { target ->
+                            command(
+                                name = "run.${target.commandId}",
+                                command = buildAndRunCommand(target.name),
+                                label = target.name,
+                                description = "Build and run the ${target.name} executable",
+                                kind = ProjectCommandKind.RUN
+                            )
+                        }
+                    )
+                )
+            }
+            add(
+                command(
+                    name = "test",
+                    command = "ctest --test-dir build --output-on-failure",
+                    label = "Run tests",
+                    description = "Run tests registered with CTest"
+                )
+            )
+            add(
+                command(
+                    name = "install",
+                    command = "cmake --install build",
+                    label = "Install",
+                    description = "Install the configured project"
+                )
+            )
+            add(
+                command(
+                    name = "clean",
+                    command = "cmake --build build --target clean",
+                    label = "Clean",
+                    description = "Clean generated build outputs"
+                )
+            )
+            add(
+                command(
+                    name = "version",
+                    command = "cmake --version && make --version",
+                    label = "Tool versions",
+                    description = "Show the installed CMake and Make versions"
+                )
+            )
+        }
     }
 
     private fun configureCommand(buildType: String): String {
         return "cmake -S . -B build -G \"Unix Makefiles\" " +
             "-DCMAKE_BUILD_TYPE=$buildType -DCMAKE_EXPORT_COMPILE_COMMANDS=ON " +
             "&& ln -sf build/compile_commands.json compile_commands.json"
+    }
+
+    private fun buildAndRunCommand(target: String): String {
+        return "if [ ! -f build/CMakeCache.txt ]; then ${configureCommand("Debug")}; fi && " +
+            "cmake --build build --target '$target' --parallel && " +
+            "executable=\"\$(find build -type f -name '$target' -perm -111 " +
+            "! -path '*/CMakeFiles/*' | head -n 1)\" && " +
+            "if [ -z \"\$executable\" ]; then " +
+            "echo 'Built $target but could not locate its executable.' >&2; exit 1; fi && " +
+            "\"\$executable\""
     }
 
     private fun command(
@@ -323,4 +363,58 @@ private object CMakeProjectCommandProvider : ProjectCommandProvider {
     )
 }
 
+internal data class CMakeExecutableTarget(
+    val name: String
+) {
+    val commandId: String
+        get() {
+            val readableName = name.replace(Regex("[^A-Za-z0-9_.-]"), "_")
+            return "$readableName.${name.hashCode().toUInt().toString(16)}"
+        }
+}
+
+internal fun cmakeExecutableTargets(projectRoot: File): List<CMakeExecutableTarget> {
+    return projectRoot.walkTopDown()
+        .onEnter { directory ->
+            directory == projectRoot ||
+                (
+                    directory.name !in CMAKE_SCAN_EXCLUDED_DIRECTORIES &&
+                        !directory.name.startsWith("cmake-build-")
+                    )
+        }
+        .filter { it.isFile && it.name == "CMakeLists.txt" }
+        .sortedWith(
+            compareBy<File>(
+                { it.relativeTo(projectRoot).invariantSeparatorsPath.count { char -> char == '/' } },
+                { it.relativeTo(projectRoot).invariantSeparatorsPath }
+            )
+        )
+        .flatMap { cmakeLists ->
+            runCatching { cmakeLists.readText() }
+                .getOrDefault("")
+                .let(CMAKE_EXECUTABLE_TARGET_REGEX::findAll)
+                .mapNotNull { match ->
+                    val name = match.groupValues[1]
+                    val arguments = match.groupValues[2].trimStart()
+                    name.takeUnless {
+                        arguments.startsWith("ALIAS", ignoreCase = true) ||
+                            arguments.startsWith("IMPORTED", ignoreCase = true)
+                    }
+                }
+        }
+        .distinct()
+        .map(::CMakeExecutableTarget)
+        .toList()
+}
+
 private const val CMAKE_INSTALL_COMMAND = "pacman -S --needed cmake make"
+private val CMAKE_SCAN_EXCLUDED_DIRECTORIES = setOf(
+    ".git",
+    ".gradle",
+    ".idea",
+    "build",
+    "out"
+)
+private val CMAKE_EXECUTABLE_TARGET_REGEX = Regex(
+    pattern = """(?im)^\s*add_executable\s*\(\s*"?([A-Za-z0-9_.+-]+)"?(?:\s+([^)]*))?\)"""
+)

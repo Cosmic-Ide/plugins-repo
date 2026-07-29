@@ -70,10 +70,10 @@
     "name": "CMake Support",
     "version": "1.0.0",
     "author": "Cosmic IDE",
-    "description": "CMake project templates, automatic detection, and configure, build, test, and install workflows.",
-    "detailedDescription": "## CMake development\n\nCreate and build C or C++ projects with integrated CMake and Make workflows.\n\n### Features\n\n- Automatic detection of projects containing `CMakeLists.txt`\n- C and C++ executable or library starter projects\n- Debug and release configuration with exported `compile_commands.json`\n- Commands for configuring, building, testing, installing, and cleaning projects\n- Generated Makefiles through CMake's Unix Makefiles generator\n\n### Setup\n\nAfter installation, run **Install CMake tools** once. Install Clangd Support separately for C-family code intelligence.",
+    "description": "CMake project templates, automatic detection, and configure, build, run, test, and install workflows.",
+    "detailedDescription": "## CMake development\n\nCreate, build, and run C or C++ projects with integrated CMake and Make workflows.\n\n### Features\n\n- Automatic detection of projects containing `CMakeLists.txt`\n- C and C++ executable or library starter projects\n- Debug and release configuration with exported `compile_commands.json`\n- Toolbar build-and-run actions for declared executable targets\n- Commands for configuring, building, testing, installing, and cleaning projects\n- Generated Makefiles through CMake's Unix Makefiles generator\n\n### Setup\n\nAfter installation, run **Install CMake tools** once. Install Clangd Support separately for C-family code intelligence.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/cmake-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/cmake-support-1.0.0.zip",
-    "sha256": "4ae6df5bf00470ac1f3cc04d0337d0f91bfaf72882344d9a760da139a04744cc"
+    "sha256": "9ae27a1292b651b1e47c3bb83f6f6eb928ce1aa68eba64cee8cd87a4d188e76b"
   }
 ]

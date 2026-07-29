@@ -50,6 +50,8 @@ android {
 dependencies {
     compileOnly(projects.ideApi)
     compileOnly(kotlin("stdlib"))
+    testImplementation(kotlin("stdlib"))
+    testImplementation("junit:junit:4.13.2")
 }
 
 configurations.named("implementation") {
