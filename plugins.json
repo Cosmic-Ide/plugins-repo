@@ -75,5 +75,16 @@
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/cmake-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/cmake-support-1.0.0.zip",
     "sha256": "635ff67848eaea8410f2808c3ad7f7b5715735938126a854ce4e560cd72938f8"
+  },
+  {
+    "id": "org.cosmicide.plugins.maven",
+    "name": "Maven Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Maven project templates, automatic detection, runnable applications, and comprehensive lifecycle and plugin goals.",
+    "detailedDescription": "## Maven development\n\nCreate and maintain Maven builds with integrated lifecycle, dependency, plugin, and application workflows.\n\n### Features\n\n- Automatic detection of projects containing `pom.xml`\n- Apache Maven archetypes for Java quickstart, simple JAR, and web application projects\n- A curated multi-module application template\n- Toolbar run actions for detected Java entry points\n- Common resolve, build, test, and run commands\n- A searchable Maven task picker with lifecycle, dependency, documentation, detected plugin, and configured execution goals\n- An interactive **Custom goals…** task for arbitrary Maven goal combinations\n\n### Setup\n\nAfter installation, run **Install Maven** once. Maven uses Cosmic IDE's selected JDK and downloads archetypes and project dependencies through the repositories configured by the project and Maven settings.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/maven-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/maven-support-1.0.0.zip",
+    "sha256": "e9008b43802e952f8eef3fea2f4f5b6b8e55c0231a71d16257374c9043721661"
   }
 ]

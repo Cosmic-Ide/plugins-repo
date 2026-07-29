@@ -19,6 +19,9 @@ in the repository index and the plugin's bundled `plugin.json` metadata.
 - **Clangd Support** — clangd code intelligence for C, C++, Objective-C, Objective-C++, and CUDA.
 - **CMake Support** — CMake project creation/detection and configure, build, run, test, install,
   and clean commands.
+- **Maven Support** — Apache archetypes for Java quickstart, simple JAR, and web projects, a curated
+  multi-module template, common commands, and a searchable Maven goal picker
+  lifecycle, dependency, plugin-goal, and run commands.
 
 On its first install, Cosmic offers to open an interactive terminal running:
 
@@ -32,6 +35,7 @@ project creation form.
 
 Clangd Support installs the `clang` package. CMake Support remains independent and installs
 `cmake` and `make`; its configure commands export `compile_commands.json` for clangd.
+Maven Support installs `maven` and uses Cosmic IDE's selected JDK.
 
 ## Build
 
