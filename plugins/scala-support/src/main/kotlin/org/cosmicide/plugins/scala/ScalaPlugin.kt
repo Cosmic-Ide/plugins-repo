@@ -507,4 +507,4 @@ private val SCALA_PACKAGE =
 private val SCALA_MAIN_REGEX = Regex(
     """(?m)(?:@\s*main\b|def\s+main\s*\(|extends\s+App\b)"""
 )
-private const val SCALA_INSTALL_COMMAND = "bash -c 'mkdir -p \$HOME/.scala/bin \$APP_FILES_DIR/usr/bin && curl -fL $COURSIER_URL | unpigz -c > \$APP_FILES_DIR/usr/bin/cs && chmod +x \$APP_FILES_DIR/usr/bin/cs && cs install --install-dir \$HOME/.scala/bin metals sbt scala-cli'"
+private const val SCALA_INSTALL_COMMAND = "bash -c \"mkdir -p \$HOME/.scala/bin \$APP_FILES_DIR/usr/bin && curl -fL $COURSIER_URL | unpigz -c > \$APP_FILES_DIR/usr/bin/cs && chmod +x \$APP_FILES_DIR/usr/bin/cs && cs install --install-dir \$HOME/.scala/bin metals sbt scala-cli && (grep -qxF 'export PATH=\$HOME/.scala/bin:\$PATH' \$HOME/.bashrc || printf 'export PATH=\$HOME/.scala/bin:\$PATH\\\\n' >> \$HOME/.bashrc)\""

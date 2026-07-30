@@ -96,6 +96,6 @@
     "detailedDescription": "## Scala development\n\nDevelop Scala projects with Metals code intelligence and integrated build-system workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, signature help, and inlay hints from **Metals**\n- Scala 2 and Scala 3 syntax highlighting for `.scala`, `.sc`, `.sbt`, and `.mill` files\n- Automatic detection of sbt, Mill, Gradle, Maven, Scala CLI, and standard Scala source layouts\n- Scala 3 sbt application and library project templates\n- Build, run, test, dependency, console, and cleanup commands\n- Searchable tasks adapted to the detected Scala build tool\n\n### Setup\n\nAfter installation, run **Install Scala tools** once. This installs Metals, sbt, and Scala CLI with Coursier into Cosmic IDE's private toolchain.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/scala-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/scala-support-1.0.0.zip",
-    "sha256": "636a8e964fa7ebfb52ddc315e43abd644a19606da868b59988a796d4380977b3"
+    "sha256": "60825ebb6b3dba4b09a6e6c4a7b62e855001b7ef00cab17ca415f868aaa8eae6"
   }
 ]
