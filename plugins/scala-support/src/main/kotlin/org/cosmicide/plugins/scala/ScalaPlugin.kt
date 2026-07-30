@@ -507,26 +507,4 @@ private val SCALA_PACKAGE =
 private val SCALA_MAIN_REGEX = Regex(
     """(?m)(?:@\s*main\b|def\s+main\s*\(|extends\s+App\b)"""
 )
-private val SCALA_INSTALL_COMMAND = """
-    set -euo pipefail
-    install_dir="${'$'}HOME/.scala/bin"
-    cs="${'$'}APP_FILES_DIR/usr/bin/cs"
-    legacy_cs="${'$'}APP_FILES_DIR/coursier/cs"
-    mkdir -p "${'$'}install_dir" "${'$'}APP_FILES_DIR/usr/bin"
-    if [ ! -x "${'$'}cs" ] && [ -x "${'$'}legacy_cs" ]; then
-      echo "Moving Coursier to /usr/bin..."
-      mv "${'$'}legacy_cs" "${'$'}cs"
-    fi
-    if [ ! -x "${'$'}cs" ]; then
-      echo "Downloading Coursier..."
-      curl -fL "$COURSIER_URL" | unpigz -c > "${'$'}cs.tmp"
-      chmod +x "${'$'}cs.tmp"
-      mv "${'$'}cs.tmp" "${'$'}cs"
-    fi
-    echo "Installing Metals, sbt, and Scala CLI..."
-    "${'$'}cs" install --install-dir "${'$'}install_dir" metals sbt scala-cli
-    test -x "${'$'}install_dir/metals"
-    test -x "${'$'}install_dir/sbt"
-    test -x "${'$'}install_dir/scala-cli"
-    echo "Scala tools installed."
-""".trimIndent()
+private const val SCALA_INSTALL_COMMAND = "bash -c 'mkdir -p \$HOME/.scala/bin \$APP_FILES_DIR/usr/bin && curl -fL $COURSIER_URL | unpigz -c > \$APP_FILES_DIR/usr/bin/cs && chmod +x \$APP_FILES_DIR/usr/bin/cs && \$APP_FILES_DIR/usr/bin/cs install --install-dir \$HOME/.scala/bin metals sbt scala-cli'"
