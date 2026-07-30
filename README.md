@@ -21,6 +21,8 @@ in the repository index and the plugin's bundled `plugin.json` metadata.
   and clean commands.
 - **Maven Support** — Apache archetypes for Java quickstart, simple JAR, and web projects, a curated
   multi-module template, common commands, and a searchable Maven goal picker
+- **Scala Support** — Metals code intelligence, sbt application and library templates, build
+  commands, and searchable tasks across common Scala build tools
   lifecycle, dependency, plugin-goal, and run commands.
 
 On its first install, Cosmic offers to open an interactive terminal running:

@@ -86,5 +86,16 @@
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/maven-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/maven-support-1.0.0.zip",
     "sha256": "e9008b43802e952f8eef3fea2f4f5b6b8e55c0231a71d16257374c9043721661"
+  },
+  {
+    "id": "org.cosmicide.plugins.scala",
+    "name": "Scala Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Metals code intelligence, sbt project creation, and Scala build, run, test, and task workflows.",
+    "detailedDescription": "## Scala development\n\nDevelop Scala projects with Metals code intelligence and integrated build-system workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, signature help, and inlay hints from **Metals**\n- Scala 2 and Scala 3 syntax highlighting for `.scala`, `.sc`, `.sbt`, and `.mill` files\n- Automatic detection of sbt, Mill, Gradle, Maven, Scala CLI, and standard Scala source layouts\n- Scala 3 sbt application and library project templates\n- Build, run, test, dependency, console, and cleanup commands\n- Searchable tasks adapted to the detected Scala build tool\n\n### Setup\n\nAfter installation, run **Install Scala tools** once. This installs Metals, sbt, and Scala CLI with Coursier into Cosmic IDE's private toolchain.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/scala-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/scala-support-1.0.0.zip",
+    "sha256": "2307bd49f6d7f18216764947a30fdb7332b0b6b276f37a0f6b6f9b088d97804f"
   }
 ]
