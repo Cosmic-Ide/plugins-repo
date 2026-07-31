@@ -41,7 +41,7 @@
     "detailedDescription": "## Gradle development\n\nCreate and maintain Gradle builds with integrated lifecycle, dependency, and custom task workflows.\n\n### Features\n\n- Automatic detection of projects containing Gradle wrapper or build files\n- Java, Kotlin, Groovy, and Scala project templates\n- Toolbar run actions for detected entry points\n- Common build, test, and run commands\n- A searchable Gradle task picker with all available tasks\n- Support for both Gradle wrapper (./gradlew) and system Gradle\n\n### Setup\n\nAfter installation, run **Install Gradle** once. Gradle projects are recognized when you open a directory containing `gradlew`, `build.gradle`, or `build.gradle.kts`. Uses Cosmic IDE's selected JDK.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gradle-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/gradle-support-1.0.0.zip",
-    "sha256": "2d2849159a694c69efdf4cbac5d984829035eccb0e29004c9b84221eb8a57653"
+    "sha256": "1698904704c65f764960a47e8fd26d3a2268064260d906a941c4226716d60266"
   },
   {
     "id": "org.cosmicide.plugins.lua",
