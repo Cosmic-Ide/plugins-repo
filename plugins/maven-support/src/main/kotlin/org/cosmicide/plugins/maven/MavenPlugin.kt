@@ -43,7 +43,7 @@ class MavenPlugin : CosmicPlugin {
         val owner = context.descriptor.id
 
         // Create task provider instance using singleton
-        val mavenTaskProvider = MavenProjectTaskProvider.getInstance()
+        val mavenTaskProvider = MavenProjectTaskProvider.getInstance(commandService)
         taskProvider = mavenTaskProvider
 
         listOf(
@@ -75,11 +75,6 @@ class MavenPlugin : CosmicPlugin {
 
         context.logger.info("Maven project support registered")
     }
-
-    /**
-     * Get the task provider instance for cache management.
-     */
-    fun getTaskProvider(): MavenProjectTaskProvider? = taskProvider
 }
 
 private object MavenProjectTypeProvider : ProjectTypeProvider {
@@ -405,7 +400,9 @@ private object MavenProjectCommandProvider : ProjectCommandProvider {
     )
 }
 
-class MavenProjectTaskProvider : ProjectTaskProvider {
+class MavenProjectTaskProvider(
+    private val commandService: CommandExecutionService
+) : ProjectTaskProvider {
     override val id = "org.cosmicide.plugins.maven.tasks"
     override val displayName = "Maven goals"
     override val description =
@@ -422,47 +419,23 @@ class MavenProjectTaskProvider : ProjectTaskProvider {
 
     override suspend fun tasks(project: Project): List<ProjectTask> {
         val cacheKey = project.root.absolutePath
-        
+
         // Check if this project was recently synced and clear cache if so
         val projectPath = project.root.absolutePath
         if (syncedProjects.contains(projectPath)) {
             taskCache.remove(cacheKey)
             syncedProjects.remove(projectPath)
         }
-        
+
         // Return cached tasks if available
         taskCache[cacheKey]?.let { cachedTasks ->
             return cachedTasks
         }
-        
+
         // Otherwise fetch and cache the tasks
-        val tasks = mavenTasks(project.root)
+        val tasks = mavenTasks(project.root, commandService)
         taskCache[cacheKey] = tasks
         return tasks
-    }
-
-    /**
-     * Clear the task cache for a specific project.
-     * This should be called after sync operations or when project files change.
-     */
-    fun clearCache(projectRoot: File) {
-        val cacheKey = projectRoot.absolutePath
-        taskCache.remove(cacheKey)
-    }
-
-    /**
-     * Mark a project as synced, which will trigger cache invalidation
-     * on the next tasks() call.
-     */
-    fun onProjectSynced(projectRoot: File) {
-        syncedProjects.add(projectRoot.absolutePath)
-    }
-
-    /**
-     * Clear the cache immediately after sync for immediate refresh.
-     */
-    fun onSyncCompleted(projectRoot: File) {
-        clearCache(projectRoot)
     }
 
     companion object {
@@ -470,66 +443,45 @@ class MavenProjectTaskProvider : ProjectTaskProvider {
         @Volatile
         private var instance: MavenProjectTaskProvider? = null
 
-        fun getInstance(): MavenProjectTaskProvider {
+        fun getInstance(commandService: CommandExecutionService): MavenProjectTaskProvider {
             return instance ?: synchronized(this) {
-                instance ?: MavenProjectTaskProvider().also { instance = it }
+                instance ?: MavenProjectTaskProvider(commandService).also { instance = it }
             }
         }
     }
 }
 
-internal fun mavenTasks(projectRoot: File): List<ProjectTask> {
-    val detectedPlugins = mavenPluginArtifactIds(projectRoot)
-    val configuredGoals = mavenConfiguredGoals(projectRoot)
-    val packaging = mavenRootPackaging(projectRoot)
+internal suspend fun mavenTasks(
+    projectRoot: File,
+    commandService: CommandExecutionService
+): List<ProjectTask> {
+    val lifecycleTasks = MAVEN_LIFECYCLES.flatMap { lifecycle ->
+        val output = describeMavenCommand(
+            projectRoot = projectRoot,
+            command = lifecycle,
+            commandService = commandService
+        ) ?: return@flatMap emptyList()
+        parseMavenLifecycle(output)
+    }
+
+    val pluginPrefixes = buildSet {
+        addAll(MAVEN_DEFAULT_DISCOVERY_PLUGINS)
+        mavenPluginArtifactIds(projectRoot)
+            .mapTo(this) { artifactId -> mavenPluginPrefix(artifactId) }
+    }
+
+    val pluginTasks = pluginPrefixes.flatMap { prefix ->
+        val output = describeMavenPlugin(
+            projectRoot = projectRoot,
+            plugin = prefix,
+            commandService = commandService
+        ) ?: return@flatMap emptyList()
+        parseMavenPluginGoals(output)
+    }
 
     return buildList {
-        addGoalTasks(
-            group = "Lifecycle",
-            goals = listOf(
-                "clean" to "Clean",
-                "validate" to "Validate",
-                "compile" to "Compile",
-                "test" to "Test",
-                "package" to "Package",
-                "verify" to "Verify",
-                "install" to "Install locally"
-            )
-        )
-        addGoalTasks(
-            group = "Dependencies",
-            goals = listOf(
-                "dependency:resolve" to "Resolve",
-                "dependency:tree" to "Dependency tree",
-                "dependency:analyze" to "Analyze",
-                "dependency:resolve-sources" to "Download sources",
-                "dependency:copy-dependencies" to "Copy dependencies"
-            )
-        )
-        addGoalTasks(
-            group = "Project information",
-            goals = listOf(
-                "help:effective-pom" to "Effective POM",
-                "help:active-profiles" to "Active profiles",
-                "help:effective-settings" to "Effective settings",
-                "help:all-profiles" to "All profiles"
-            )
-        )
-        addGoalTasks(
-            group = "Documentation",
-            goals = listOf(
-                "javadoc:javadoc" to "Generate Javadoc",
-                "site:site" to "Generate project site"
-            )
-        )
-        addGoalTasks(
-            group = "Plugin goals",
-            goals = detectedPluginGoals(packaging, detectedPlugins)
-        )
-        addGoalTasks(
-            group = "Configured executions",
-            goals = configuredGoals.map { goal -> goal to goal }
-        )
+        addAll(lifecycleTasks)
+        addAll(pluginTasks)
         add(
             ProjectTask(
                 id = "org.cosmicide.plugins.maven.tasks.custom",
@@ -540,66 +492,122 @@ internal fun mavenTasks(projectRoot: File): List<ProjectTask> {
             )
         )
     }.distinctBy(ProjectTask::id)
+        .sortedWith(compareBy(ProjectTask::group, ProjectTask::label))
 }
 
-private fun MutableList<ProjectTask>.addGoalTasks(
-    group: String,
-    goals: List<Pair<String, String>>
-) {
-    goals.forEach { (goal, label) ->
-        add(
-            ProjectTask(
-                id = "org.cosmicide.plugins.maven.tasks.${group.commandId()}.${goal.commandId()}",
-                label = label,
-                command = "mvn $goal",
-                description = "Run mvn $goal",
-                group = group
-            )
+private suspend fun describeMavenCommand(
+    projectRoot: File,
+    command: String,
+    commandService: CommandExecutionService
+): String? {
+    val result = commandService.execute(
+        CommandRequest(
+            command = "mvn",
+            arguments = MAVEN_DESCRIBE_BASE_ARGUMENTS + "-Dcmd=$command",
+            workingDirectory = projectRoot
         )
-    }
+    ) { }
+    return result.output.takeIf { result.successful && it.isNotBlank() }
 }
 
-private fun detectedPluginGoals(
-    packaging: String,
-    plugins: Set<String>
-): List<Pair<String, String>> = buildList {
-    if (packaging == "war" || "maven-war-plugin" in plugins) {
-        add("war:war" to "Build WAR")
-        add("war:exploded" to "Exploded WAR")
-        add("war:inplace" to "In-place WAR")
-    }
-    if ("exec-maven-plugin" in plugins) {
-        add("exec:java" to "Exec Java")
-        add("exec:exec" to "Exec program")
-    }
-    if ("spring-boot-maven-plugin" in plugins) {
-        add("spring-boot:run" to "Spring Boot run")
-        add("spring-boot:repackage" to "Spring Boot repackage")
-    }
-    if ("quarkus-maven-plugin" in plugins) {
-        add("quarkus:dev" to "Quarkus dev")
-        add("quarkus:build" to "Quarkus build")
-    }
-    if ("javafx-maven-plugin" in plugins) {
-        add("javafx:run" to "JavaFX run")
-    }
-    if ("maven-shade-plugin" in plugins) {
-        add("shade:shade" to "Shade JAR")
-    }
-    if ("maven-assembly-plugin" in plugins) {
-        add("assembly:single" to "Build assembly")
-    }
-    if ("maven-checkstyle-plugin" in plugins) {
-        add("checkstyle:check" to "Checkstyle")
-    }
-    if ("spotless-maven-plugin" in plugins) {
-        add("spotless:check" to "Spotless check")
-        add("spotless:apply" to "Spotless apply")
-    }
-    if ("maven-javadoc-plugin" in plugins) {
-        add("javadoc:javadoc" to "Generate Javadoc")
-    }
+private suspend fun describeMavenPlugin(
+    projectRoot: File,
+    plugin: String,
+    commandService: CommandExecutionService
+): String? {
+    val result = commandService.execute(
+        CommandRequest(
+            command = "mvn",
+            arguments = MAVEN_DESCRIBE_BASE_ARGUMENTS + "-Dplugin=$plugin",
+            workingDirectory = projectRoot
+        )
+    ) { }
+    return result.output.takeIf { result.successful && it.isNotBlank() }
 }
+
+internal fun parseMavenLifecycle(output: String): List<ProjectTask> {
+    return output.lineSequence()
+        .map(String::stripMavenLogPrefix)
+        .mapNotNull { line ->
+            val match = MAVEN_LIFECYCLE_PHASE_REGEX.matchEntire(line.trim())
+                ?: return@mapNotNull null
+            val phase = match.groupValues[1]
+            val binding = match.groupValues[2].trim()
+            if (binding.equals("NOT DEFINED", ignoreCase = true)) {
+                return@mapNotNull null
+            }
+            ProjectTask(
+                id = "org.cosmicide.plugins.maven.tasks.lifecycle.${phase.commandId()}",
+                label = phase,
+                command = "mvn $phase",
+                description = "Maven lifecycle phase bound to $binding",
+                group = "Lifecycle"
+            )
+        }
+        .distinctBy(ProjectTask::id)
+        .toList()
+}
+
+internal fun parseMavenPluginGoals(output: String): List<ProjectTask> {
+    val lines = output.lineSequence()
+        .map(String::stripMavenLogPrefix)
+        .toList()
+    val tasks = mutableListOf<ProjectTask>()
+
+    var index = 0
+    while (index < lines.size) {
+        val goal = MAVEN_DESCRIBED_GOAL_REGEX
+            .matchEntire(lines[index].trim())
+            ?.groupValues
+            ?.get(1)
+
+        if (goal == null) {
+            index++
+            continue
+        }
+
+        var description = ""
+        var cursor = index + 1
+        while (cursor < lines.size) {
+            val trimmed = lines[cursor].trim()
+            if (MAVEN_DESCRIBED_GOAL_REGEX.matches(trimmed)) break
+            if (trimmed.startsWith("Description:")) {
+                val parts = mutableListOf(trimmed.removePrefix("Description:").trim())
+                cursor++
+                while (cursor < lines.size) {
+                    val continuation = lines[cursor].trim()
+                    if (continuation.isBlank() ||
+                        MAVEN_DESCRIBED_GOAL_REGEX.matches(continuation) ||
+                        continuation.startsWith("Deprecated") ||
+                        continuation.startsWith("For more information")
+                    ) {
+                        break
+                    }
+                    parts += continuation
+                    cursor++
+                }
+                description = parts.filter(String::isNotBlank).joinToString(" ")
+                break
+            }
+            cursor++
+        }
+
+        tasks += ProjectTask(
+            id = "org.cosmicide.plugins.maven.tasks.plugin.${goal.commandId()}",
+            label = goal,
+            command = "mvn $goal",
+            description = description.ifBlank { "Run Maven goal: $goal" },
+            group = "Plugin goals"
+        )
+        index = maxOf(index + 1, cursor)
+    }
+
+    return tasks.distinctBy(ProjectTask::id)
+}
+
+private fun String.stripMavenLogPrefix(): String =
+    replace(ANSI_ESCAPE_REGEX, "")
+        .replace(MAVEN_LOG_PREFIX_REGEX, "")
 
 internal data class MavenRunTarget(
     val modulePath: String,
@@ -620,7 +628,7 @@ internal data class MavenRunTarget(
             } else {
                 val module = modulePath.shellQuote()
                 "mvn -pl $module -am install -DskipTests && " +
-                    "mvn -pl $module $execGoal $mainOption"
+                        "mvn -pl $module $execGoal $mainOption"
             }
         }
 }
@@ -671,41 +679,17 @@ internal fun mavenPluginArtifactIds(projectRoot: File): Set<String> {
         .toSet()
 }
 
-internal fun mavenConfiguredGoals(projectRoot: File): List<String> {
-    return mavenPomFiles(projectRoot)
-        .flatMap { pom ->
-            val text = runCatching { pom.readText() }.getOrDefault("")
-            MAVEN_PLUGIN_BLOCK_REGEX.findAll(text).flatMap { plugin ->
-                val pluginBody = plugin.groupValues[1]
-                val artifactId = MAVEN_ARTIFACT_ID_REGEX
-                    .find(pluginBody)
-                    ?.groupValues
-                    ?.get(1)
-                    ?: return@flatMap emptySequence()
-                val prefix = mavenPluginPrefix(artifactId)
-                MAVEN_GOAL_REGEX.findAll(pluginBody).map { goal ->
-                    "$prefix:${goal.groupValues[1]}"
-                }
-            }
-        }
-        .distinct()
-        .toList()
-}
 
-internal fun mavenRootPackaging(projectRoot: File): String {
-    val text = runCatching { projectRoot.resolve("pom.xml").readText() }.getOrDefault("")
-    return MAVEN_PACKAGING_REGEX.find(text)?.groupValues?.get(1)?.trim().orEmpty().ifBlank { "jar" }
-}
 
 private fun mavenPomFiles(projectRoot: File): Sequence<File> {
     return projectRoot.walkTopDown()
         .onEnter { directory ->
             directory == projectRoot ||
-                directory.name !in MAVEN_SCAN_EXCLUDED_DIRECTORIES
+                    directory.name !in MAVEN_SCAN_EXCLUDED_DIRECTORIES
         }
         .filter { it.isFile && it.name == "pom.xml" }
         .sortedWith(
-            compareBy<File>(
+            compareBy(
                 { it.relativeTo(projectRoot).invariantSeparatorsPath.count { char -> char == '/' } },
                 { it.relativeTo(projectRoot).invariantSeparatorsPath }
             )
@@ -784,12 +768,12 @@ internal fun modulePom(
     execMainClass: String? = null
 ): String {
     val dependency = dependencyArtifactId?.let {
-        """
+        $$"""
             <dependencies>
               <dependency>
-                <groupId>$groupId</groupId>
-                <artifactId>$it</artifactId>
-                <version>${'$'}{project.version}</version>
+                <groupId>$$groupId</groupId>
+                <artifactId>$$it</artifactId>
+                <version>${project.version}</version>
               </dependency>
             </dependencies>
         """.trimIndent()
@@ -924,17 +908,28 @@ private val JAVA_MAIN_METHOD_REGEX =
     Regex("""\bpublic\s+static\s+void\s+main\s*\(\s*String(?:\s*\[\s*]|\s+\w+\s*\[\s*])""")
 private val JAVA_PACKAGE_DECLARATION_REGEX =
     Regex("""(?m)^\s*package\s+([A-Za-z_][A-Za-z0-9_.]*)\s*;""")
-private val MAVEN_PACKAGING_REGEX =
-    Regex("""<packaging>\s*([^<]+)\s*</packaging>""", RegexOption.IGNORE_CASE)
 private val MAVEN_PLUGIN_BLOCK_REGEX = Regex(
     """<plugin\b[^>]*>(.*?)</plugin>""",
     setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)
 )
 private val MAVEN_ARTIFACT_ID_REGEX =
     Regex("""<artifactId>\s*([A-Za-z0-9_.-]+)\s*</artifactId>""", RegexOption.IGNORE_CASE)
-private val MAVEN_GOAL_REGEX =
-    Regex("""<goal>\s*([A-Za-z0-9_.-]+)\s*</goal>""", RegexOption.IGNORE_CASE)
+private val MAVEN_LIFECYCLES = listOf("clean", "default", "site")
+private val MAVEN_DEFAULT_DISCOVERY_PLUGINS = setOf("help", "dependency", "site", "javadoc")
+private val MAVEN_DESCRIBE_BASE_ARGUMENTS = listOf(
+    "--batch-mode",
+    "--no-transfer-progress",
+    "-Dstyle.color=never",
+    "help:describe"
+)
+private val MAVEN_LIFECYCLE_PHASE_REGEX =
+    Regex("""^\*\s+([A-Za-z0-9_.-]+):\s*(.+)$""")
+private val MAVEN_DESCRIBED_GOAL_REGEX =
+    Regex("""^([A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+)$""")
+private val MAVEN_LOG_PREFIX_REGEX =
+    Regex("""^\[(?:INFO|WARNING|ERROR|DEBUG)]\s*""")
+private val ANSI_ESCAPE_REGEX = Regex("\u001B\\[[;\\d]*m")
 private const val CUSTOM_MAVEN_GOALS_COMMAND =
     "printf 'Maven goals and options: '; IFS= read -r goals; " +
-        "if [ -z \"\$goals\" ]; then echo 'No goals entered.'; " +
-        "else set -f; mvn \$goals; fi"
+            $$"if [ -z \"$goals\" ]; then echo 'No goals entered.'; " +
+            $$"else set -f; mvn $goals; fi"

@@ -41,7 +41,7 @@
     "detailedDescription": "## Gradle development\n\nCreate and maintain Gradle builds with integrated lifecycle, dependency, and custom task workflows.\n\n### Features\n\n- Automatic detection of projects containing Gradle wrapper or build files\n- Java, Kotlin, Groovy, and Scala project templates\n- Toolbar run actions for detected entry points\n- Common build, test, and run commands\n- A searchable Gradle task picker with all available tasks\n- Support for both Gradle wrapper (./gradlew) and system Gradle\n\n### Setup\n\nAfter installation, run **Install Gradle** once. Gradle projects are recognized when you open a directory containing `gradlew`, `build.gradle`, or `build.gradle.kts`. Uses Cosmic IDE's selected JDK.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gradle-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/gradle-support-1.0.0.zip",
-    "sha256": "c11bfa79e2f278d0c83c96858e7b87eddd626c1d173ea78cad3ba9eac485b35b"
+    "sha256": "c07cff83d5cecc8d834e92897483bec3d63dbd49a4effff2f894a0ffe4eb8eb1"
   },
   {
     "id": "org.cosmicide.plugins.lua",
@@ -96,7 +96,7 @@
     "detailedDescription": "## Maven development\n\nCreate and maintain Maven builds with integrated lifecycle, dependency, plugin, and application workflows.\n\n### Features\n\n- Automatic detection of projects containing `pom.xml`\n- Apache Maven archetypes for Java quickstart, simple JAR, and web application projects\n- A curated multi-module application template\n- Toolbar run actions for detected Java entry points\n- Common resolve, build, test, and run commands\n- A searchable Maven task picker with lifecycle, dependency, documentation, detected plugin, and configured execution goals\n- An interactive **Custom goals…** task for arbitrary Maven goal combinations\n\n### Setup\n\nAfter installation, run **Install Maven** once. Maven uses Cosmic IDE's selected JDK and downloads archetypes and project dependencies through the repositories configured by the project and Maven settings.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/maven-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/maven-support-1.0.0.zip",
-    "sha256": "28eed6e37547ed9cadfec6d170b28b9099bdf662c267ebfbc7136a2dd4fbfd0d"
+    "sha256": "8d3d1d3b51fcb25c1c4af31ed0e6dcc0555fdf60df17c6b1d45db2c2a92b6f2e"
   },
   {
     "id": "org.cosmicide.plugins.scala",

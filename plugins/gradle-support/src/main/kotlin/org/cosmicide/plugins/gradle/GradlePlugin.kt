@@ -73,8 +73,6 @@ class GradlePlugin : CosmicPlugin {
 
         context.logger.info("Gradle project support registered")
     }
-
-    fun getTaskProvider(): GradleProjectTaskProvider? = taskProvider
 }
 
 private object GradleProjectTypeProvider : ProjectTypeProvider {
@@ -320,9 +318,9 @@ private object GradleProjectCommandProvider : ProjectCommandProvider {
         return buildList {
             add(
                 command(
-                    name = "refresh",
-                    command = "$gradleCommand help --refresh-dependencies",
-                    label = "Refresh project",
+                    name = "sync",
+                    command = gradleCommand,
+                    label = "Sync project",
                     description = "Configure the build and refresh dependencies",
                     kind = ProjectCommandKind.SYNC
                 )
@@ -430,14 +428,6 @@ class GradleProjectTaskProvider(
         taskCache[cacheKey] = GradleTaskCacheEntry(fingerprint, tasks)
         return tasks
     }
-
-    fun clearCache(projectRoot: File) {
-        taskCache.remove(projectRoot.canonicalFile.path)
-    }
-
-    fun onProjectSynced(projectRoot: File) = clearCache(projectRoot)
-
-    fun onSyncCompleted(projectRoot: File) = clearCache(projectRoot)
 }
 
 internal suspend fun gradleTasks(
