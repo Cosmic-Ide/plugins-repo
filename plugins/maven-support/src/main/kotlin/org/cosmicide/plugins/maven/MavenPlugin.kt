@@ -35,9 +35,16 @@ class MavenPlugin : CosmicPlugin {
         )
     )
 
+    // Store reference to task provider for cache management
+    private var taskProvider: MavenProjectTaskProvider? = null
+
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
         val owner = context.descriptor.id
+
+        // Create task provider instance using singleton
+        val mavenTaskProvider = MavenProjectTaskProvider.getInstance()
+        taskProvider = mavenTaskProvider
 
         listOf(
             context.extensions.register(
@@ -60,7 +67,7 @@ class MavenPlugin : CosmicPlugin {
             ),
             context.extensions.register(
                 point = ProjectExtensionPoints.TASK_PROVIDER,
-                extension = MavenProjectTaskProvider,
+                extension = mavenTaskProvider,
                 ownerPluginId = owner,
                 priority = 350
             )
@@ -68,6 +75,11 @@ class MavenPlugin : CosmicPlugin {
 
         context.logger.info("Maven project support registered")
     }
+
+    /**
+     * Get the task provider instance for cache management.
+     */
+    fun getTaskProvider(): MavenProjectTaskProvider? = taskProvider
 }
 
 private object MavenProjectTypeProvider : ProjectTypeProvider {
@@ -325,6 +337,15 @@ private object MavenProjectCommandProvider : ProjectCommandProvider {
         return buildList {
             add(
                 command(
+                    name = "sync",
+                    command = "mvn dependency:resolve dependency:go-offline",
+                    label = "Sync project",
+                    description = "Sync Maven project and resolve dependencies",
+                    kind = ProjectCommandKind.SYNC
+                )
+            )
+            add(
+                command(
                     name = "resolve",
                     command = "mvn dependency:go-offline",
                     label = "Resolve dependencies",
@@ -384,17 +405,77 @@ private object MavenProjectCommandProvider : ProjectCommandProvider {
     )
 }
 
-private object MavenProjectTaskProvider : ProjectTaskProvider {
+class MavenProjectTaskProvider : ProjectTaskProvider {
     override val id = "org.cosmicide.plugins.maven.tasks"
     override val displayName = "Maven goals"
     override val description =
         "Choose a lifecycle phase or plugin goal discovered from the Maven project"
 
+    // Cache for task lists, keyed by project root path
+    private val taskCache = mutableMapOf<String, List<ProjectTask>>()
+
+    // Track projects that have been synced and need cache refresh
+    private val syncedProjects = mutableSetOf<String>()
+
     override fun supports(project: Project): Boolean =
         MavenProjectTypeProvider.supports(project.root)
 
-    override suspend fun tasks(project: Project): List<ProjectTask> =
-        mavenTasks(project.root)
+    override suspend fun tasks(project: Project): List<ProjectTask> {
+        val cacheKey = project.root.absolutePath
+        
+        // Check if this project was recently synced and clear cache if so
+        val projectPath = project.root.absolutePath
+        if (syncedProjects.contains(projectPath)) {
+            taskCache.remove(cacheKey)
+            syncedProjects.remove(projectPath)
+        }
+        
+        // Return cached tasks if available
+        taskCache[cacheKey]?.let { cachedTasks ->
+            return cachedTasks
+        }
+        
+        // Otherwise fetch and cache the tasks
+        val tasks = mavenTasks(project.root)
+        taskCache[cacheKey] = tasks
+        return tasks
+    }
+
+    /**
+     * Clear the task cache for a specific project.
+     * This should be called after sync operations or when project files change.
+     */
+    fun clearCache(projectRoot: File) {
+        val cacheKey = projectRoot.absolutePath
+        taskCache.remove(cacheKey)
+    }
+
+    /**
+     * Mark a project as synced, which will trigger cache invalidation
+     * on the next tasks() call.
+     */
+    fun onProjectSynced(projectRoot: File) {
+        syncedProjects.add(projectRoot.absolutePath)
+    }
+
+    /**
+     * Clear the cache immediately after sync for immediate refresh.
+     */
+    fun onSyncCompleted(projectRoot: File) {
+        clearCache(projectRoot)
+    }
+
+    companion object {
+        // Singleton instance for easy access from other parts of the plugin
+        @Volatile
+        private var instance: MavenProjectTaskProvider? = null
+
+        fun getInstance(): MavenProjectTaskProvider {
+            return instance ?: synchronized(this) {
+                instance ?: MavenProjectTaskProvider().also { instance = it }
+            }
+        }
+    }
 }
 
 internal fun mavenTasks(projectRoot: File): List<ProjectTask> {
