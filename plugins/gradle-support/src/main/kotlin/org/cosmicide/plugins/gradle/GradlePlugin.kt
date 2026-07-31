@@ -1026,7 +1026,7 @@ private fun String.commandId(): String {
     return "$readable.${hashCode().toUInt().toString(16)}"
 }
 
-private const val GRADLE_INSTALL_COMMAND = "pacman -U --noconfirm --config <(echo -e \"[options]\\nSigLevel = Never\") https://archlinux.org/packages/extra/any/gradle/download/"
+private const val GRADLE_INSTALL_COMMAND = "pacman -U --noconfirm --config <(printf \"[options]\\nSigLevel = Never\\n\") https://archlinux.org/packages/extra/any/gradle/download/"
 private const val GRADLE_COMMAND = "gradle"
 private const val GRADLE_TASK_MARKER = "__COSMIC_GRADLE_TASK__\t"
 
