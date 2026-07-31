@@ -92,18 +92,9 @@ private object GradleProjectTypeProvider : ProjectTypeProvider {
                 projectRoot.resolve("settings.gradle.kts").isFile
 }
 
-private enum class GradleProjectGenerator {
-    INIT,
-    SWIFT_APPLICATION,
-    SWIFT_LIBRARY,
-    C_APPLICATION,
-    C_LIBRARY
-}
-
 private data class GradleProjectType(
     val id: String,
     val label: String,
-    val generator: GradleProjectGenerator = GradleProjectGenerator.INIT,
     val jvm: Boolean = false,
     val packageSupported: Boolean = false,
     val testFrameworkSupported: Boolean = false,
@@ -234,27 +225,17 @@ private class GradleProjectCreationProvider(
         try {
             check(root.mkdirs()) { "Could not create the project directory" }
 
-            when (projectType.generator) {
-                GradleProjectGenerator.INIT -> createWithGradleInit(
-                    root = root,
-                    name = name,
-                    projectType = projectType,
-                    dsl = dsl,
-                    packageName = packageName,
-                    javaVersion = javaVersion,
-                    testFramework = testFramework,
-                    splitProject = splitProject,
-                    reporter = reporter
-                )
-                GradleProjectGenerator.SWIFT_APPLICATION ->
-                    createSwiftProject(root, name, dsl, application = true)
-                GradleProjectGenerator.SWIFT_LIBRARY ->
-                    createSwiftProject(root, name, dsl, application = false)
-                GradleProjectGenerator.C_APPLICATION ->
-                    createCProject(root, name, dsl, application = true)
-                GradleProjectGenerator.C_LIBRARY ->
-                    createCProject(root, name, dsl, application = false)
-            }
+            createWithGradleInit(
+                root = root,
+                name = name,
+                projectType = projectType,
+                dsl = dsl,
+                packageName = packageName,
+                javaVersion = javaVersion,
+                testFramework = testFramework,
+                splitProject = splitProject,
+                reporter = reporter
+            )
 
             check(
                 root.resolve("settings.gradle").isFile ||
@@ -464,63 +445,82 @@ internal suspend fun gradleTasks(
     gradleCommand: String,
     commandService: CommandExecutionService
 ): List<ProjectTask> {
-    val initScript = File.createTempFile("cosmic-gradle-tasks-", ".gradle", projectRoot)
-    return try {
-        initScript.writeText(GRADLE_TASK_DISCOVERY_INIT_SCRIPT)
-
-        val wrapper = projectRoot.resolve("gradlew")
-        val executable = if (wrapper.isFile && !wrapper.canExecute()) "sh" else gradleCommand
-        val arguments = buildList {
-            if (wrapper.isFile && !wrapper.canExecute()) add("./gradlew")
-            add("--quiet")
-            add("--init-script")
-            add(initScript.absolutePath)
-            add("cosmicListTasks")
-        }
-        val result = commandService.execute(
-            CommandRequest(
-                command = executable,
-                arguments = arguments,
-                workingDirectory = projectRoot
-            )
-        ) { }
-
-        val shellCommand = gradleShellCommand(projectRoot)
-        val tasks = if (result.successful) {
-            result.output.lineSequence()
-                .mapNotNull { line -> parseDiscoveredGradleTask(line, shellCommand) }
-                .distinctBy(ProjectTask::id)
-                .sortedWith(compareBy(ProjectTask::group, ProjectTask::label))
-                .toList()
-        } else {
-            emptyList()
-        }
-
-        tasks.ifEmpty { fallbackGradleTasks(gradleShellCommand(projectRoot)) }
-    } finally {
-        initScript.delete()
+    val wrapper = projectRoot.resolve("gradlew")
+    val executable = if (wrapper.isFile && !wrapper.canExecute()) "sh" else gradleCommand
+    val arguments = buildList {
+        if (wrapper.isFile && !wrapper.canExecute()) add("./gradlew")
+        add("tasks")
+        add("--all")
+        add("--console=plain")
+        add("--quiet")
     }
+
+    val result = commandService.execute(
+        CommandRequest(
+            command = executable,
+            arguments = arguments,
+            workingDirectory = projectRoot
+        )
+    ) { }
+
+    val shellCommand = gradleShellCommand(projectRoot)
+    val tasks = if (result.successful) {
+        parseGradleTasks(result.output, shellCommand)
+    } else {
+        emptyList()
+    }
+
+    return tasks.ifEmpty { fallbackGradleTasks(shellCommand) }
 }
 
-private fun parseDiscoveredGradleTask(line: String, gradleCommand: String): ProjectTask? {
-    if (!line.startsWith(GRADLE_TASK_MARKER)) return null
-    val fields = line.removePrefix(GRADLE_TASK_MARKER).split('\t', limit = 4)
-    if (fields.size < 4) return null
+private fun parseGradleTasks(output: String, gradleCommand: String): List<ProjectTask> {
+    val tasks = mutableListOf<ProjectTask>()
+    val lines = output.lines()
+    var currentGroup: String? = null
 
-    val taskPath = fields[0].trim()
-    if (!taskPath.matches(GRADLE_TASK_PATH_REGEX)) return null
+    lines.forEachIndexed { index, line ->
+        val trimmed = line.trim()
+        val nextLine = lines.getOrNull(index + 1)?.trim().orEmpty()
 
-    val group = fields[1].trim().ifBlank { "Other" }
-    val description = fields[2].trim().ifBlank { "Run Gradle task: $taskPath" }
-    val projectPath = fields[3].trim().ifBlank { ":" }
+        if (
+            trimmed.endsWith(" tasks", ignoreCase = true) &&
+            nextLine.isNotEmpty() &&
+            nextLine.all { it == '-' }
+        ) {
+            currentGroup = trimmed.removeSuffix(" tasks").ifBlank { "Other" }
+            return@forEachIndexed
+        }
 
-    return ProjectTask(
-        id = "org.cosmicide.plugins.gradle.tasks.${taskPath.commandId()}",
-        label = taskPath,
-        command = "$gradleCommand ${taskPath.shellQuote()}",
-        description = if (projectPath == ":") description else "$description ($projectPath)",
-        group = group
-    )
+        if (trimmed.isEmpty()) {
+            currentGroup = null
+            return@forEachIndexed
+        }
+
+        val group = currentGroup ?: return@forEachIndexed
+        if (trimmed.all { it == '-' }) return@forEachIndexed
+
+        val match = GRADLE_TASK_LINE_REGEX.matchEntire(trimmed)
+            ?: return@forEachIndexed
+        val taskPath = match.groupValues[1]
+        if (!taskPath.matches(GRADLE_TASK_PATH_REGEX)) return@forEachIndexed
+
+        val description = match.groupValues.getOrNull(2)
+            .orEmpty()
+            .trim()
+            .ifBlank { "Run Gradle task: $taskPath" }
+
+        tasks += ProjectTask(
+            id = "org.cosmicide.plugins.gradle.tasks.${taskPath.commandId()}",
+            label = taskPath,
+            command = "$gradleCommand ${taskPath.shellQuote()}",
+            description = description,
+            group = group
+        )
+    }
+
+    return tasks
+        .distinctBy(ProjectTask::id)
+        .sortedWith(compareBy(ProjectTask::group, ProjectTask::label))
 }
 
 private fun fallbackGradleTasks(gradleCommand: String): List<ProjectTask> = listOf(
@@ -747,232 +747,6 @@ private fun gradleInitArguments(
     add("--no-comments")
 }
 
-private fun createSwiftProject(root: File, name: String, dsl: String, application: Boolean) {
-    writeGradleSettings(root, name, dsl)
-    val plugin = if (application) "swift-application" else "swift-library"
-    val buildFile = root.resolve(if (dsl == "kotlin") "build.gradle.kts" else "build.gradle")
-    buildFile.writeText(
-        if (dsl == "kotlin") {
-            """
-            plugins {
-                `$plugin`
-            }
-            """.trimIndent() + "\n"
-        } else {
-            """
-            plugins {
-                id '$plugin'
-            }
-            """.trimIndent() + "\n"
-        }
-    )
-
-    val sourceRoot = root.resolve("src/main/swift")
-    check(sourceRoot.mkdirs()) { "Could not create Swift source directory" }
-    if (application) {
-        sourceRoot.resolve("main.swift").writeText("print(\"Hello from $name!\")\n")
-    } else {
-        sourceRoot.resolve("Greeting.swift").writeText(
-            """
-            public struct Greeting {
-                public static func message() -> String {
-                    "Hello from $name!"
-                }
-            }
-            """.trimIndent() + "\n"
-        )
-    }
-}
-
-private fun createCProject(root: File, name: String, dsl: String, application: Boolean) {
-    writeGradleSettings(root, name, dsl)
-    val buildFile = root.resolve(if (dsl == "kotlin") "build.gradle.kts" else "build.gradle")
-    buildFile.writeText(
-        if (dsl == "kotlin") cKotlinBuildScript(name, application)
-        else cGroovyBuildScript(name, application)
-    )
-
-    val sourceRoot = root.resolve("src/main/c")
-    val headerRoot = root.resolve("src/main/headers")
-    check(sourceRoot.mkdirs()) { "Could not create C source directory" }
-    if (!application) check(headerRoot.mkdirs()) { "Could not create C header directory" }
-
-    if (application) {
-        sourceRoot.resolve("main.c").writeText(
-            """
-            #include <stdio.h>
-
-            int main(void) {
-                puts("Hello from $name!");
-                return 0;
-            }
-            """.trimIndent() + "\n"
-        )
-    } else {
-        headerRoot.resolve("greeting.h").writeText(
-            """
-            #ifndef COSMIC_GREETING_H
-            #define COSMIC_GREETING_H
-
-            const char *cosmic_greeting(void);
-
-            #endif
-            """.trimIndent() + "\n"
-        )
-        sourceRoot.resolve("greeting.c").writeText(
-            """
-            #include "greeting.h"
-
-            const char *cosmic_greeting(void) {
-                return "Hello from $name!";
-            }
-            """.trimIndent() + "\n"
-        )
-    }
-}
-
-private fun cKotlinBuildScript(name: String, application: Boolean): String =
-    if (application) {
-        """
-        import org.gradle.api.tasks.Exec
-
-        val outputDirectory = layout.buildDirectory.dir("bin")
-        val executable = outputDirectory.map { it.file("$name") }
-
-        val compileDebug by tasks.registering(Exec::class) {
-            group = "build"
-            description = "Compile the C application"
-            inputs.files(fileTree("src/main/c") { include("**/*.c") })
-            outputs.file(executable)
-            doFirst { outputDirectory.get().asFile.mkdirs() }
-            commandLine(
-                "cc", "-std=c17", "-Wall", "-Wextra", "-g",
-                "-o", executable.get().asFile.absolutePath,
-                "src/main/c/main.c"
-            )
-        }
-
-        tasks.register<Exec>("run") {
-            group = "application"
-            description = "Run the C application"
-            dependsOn(compileDebug)
-            commandLine(executable.get().asFile.absolutePath)
-        }
-
-        tasks.register("build") {
-            group = "build"
-            dependsOn(compileDebug)
-        }
-        """.trimIndent() + "\n"
-    } else {
-        """
-        import org.gradle.api.tasks.Exec
-
-        val outputDirectory = layout.buildDirectory.dir("lib")
-        val library = outputDirectory.map { it.file("lib$name.a") }
-        val objectFile = layout.buildDirectory.file("obj/greeting.o")
-
-        val compileDebug by tasks.registering(Exec::class) {
-            group = "build"
-            description = "Compile the C library"
-            inputs.files(fileTree("src/main/c") { include("**/*.c") })
-            inputs.files(fileTree("src/main/headers") { include("**/*.h") })
-            outputs.file(objectFile)
-            doFirst { objectFile.get().asFile.parentFile.mkdirs() }
-            commandLine(
-                "cc", "-std=c17", "-Wall", "-Wextra", "-g", "-fPIC",
-                "-Isrc/main/headers", "-c", "src/main/c/greeting.c",
-                "-o", objectFile.get().asFile.absolutePath
-            )
-        }
-
-        tasks.register<Exec>("archive") {
-            group = "build"
-            description = "Archive the C static library"
-            dependsOn(compileDebug)
-            outputs.file(library)
-            doFirst { outputDirectory.get().asFile.mkdirs() }
-            commandLine(
-                "ar", "rcs", library.get().asFile.absolutePath,
-                objectFile.get().asFile.absolutePath
-            )
-        }
-
-        tasks.register("build") {
-            group = "build"
-            dependsOn("archive")
-        }
-        """.trimIndent() + "\n"
-    }
-
-private fun cGroovyBuildScript(name: String, application: Boolean): String =
-    if (application) {
-        """
-        def outputDirectory = layout.buildDirectory.dir('bin')
-        def executable = outputDirectory.map { it.file('$name') }
-
-        tasks.register('compileDebug', Exec) {
-            group = 'build'
-            description = 'Compile the C application'
-            inputs.files(fileTree('src/main/c') { include '**/*.c' })
-            outputs.file(executable)
-            doFirst { outputDirectory.get().asFile.mkdirs() }
-            commandLine 'cc', '-std=c17', '-Wall', '-Wextra', '-g',
-                '-o', executable.get().asFile.absolutePath, 'src/main/c/main.c'
-        }
-
-        tasks.register('run', Exec) {
-            group = 'application'
-            description = 'Run the C application'
-            dependsOn 'compileDebug'
-            commandLine executable.get().asFile.absolutePath
-        }
-
-        tasks.register('build') {
-            group = 'build'
-            dependsOn 'compileDebug'
-        }
-        """.trimIndent() + "\n"
-    } else {
-        """
-        def outputDirectory = layout.buildDirectory.dir('lib')
-        def library = outputDirectory.map { it.file('lib$name.a') }
-        def objectFile = layout.buildDirectory.file('obj/greeting.o')
-
-        tasks.register('compileDebug', Exec) {
-            group = 'build'
-            description = 'Compile the C library'
-            inputs.files(fileTree('src/main/c') { include '**/*.c' })
-            inputs.files(fileTree('src/main/headers') { include '**/*.h' })
-            outputs.file(objectFile)
-            doFirst { objectFile.get().asFile.parentFile.mkdirs() }
-            commandLine 'cc', '-std=c17', '-Wall', '-Wextra', '-g', '-fPIC',
-                '-Isrc/main/headers', '-c', 'src/main/c/greeting.c',
-                '-o', objectFile.get().asFile.absolutePath
-        }
-
-        tasks.register('archive', Exec) {
-            group = 'build'
-            description = 'Archive the C static library'
-            dependsOn 'compileDebug'
-            outputs.file(library)
-            doFirst { outputDirectory.get().asFile.mkdirs() }
-            commandLine 'ar', 'rcs', library.get().asFile.absolutePath,
-                objectFile.get().asFile.absolutePath
-        }
-
-        tasks.register('build') {
-            group = 'build'
-            dependsOn 'archive'
-        }
-        """.trimIndent() + "\n"
-    }
-
-private fun writeGradleSettings(root: File, name: String, dsl: String) {
-    val settings = root.resolve(if (dsl == "kotlin") "settings.gradle.kts" else "settings.gradle")
-    settings.writeText("rootProject.name = ${name.gradleStringLiteral()}\n")
-}
-
 private fun File.mergeGitignoreEntries(entries: List<String>) {
     val existing = if (isFile) readLines() else emptyList()
     val merged = (existing + entries).map(String::trimEnd).distinct()
@@ -1016,9 +790,6 @@ private fun File.readTextOrNull(): String? = runCatching { readText() }.getOrNul
 private fun String.withoutSimpleComments(): String =
     replace(BLOCK_COMMENT_REGEX, " ").replace(LINE_COMMENT_REGEX, " ")
 
-private fun String.gradleStringLiteral(): String =
-    "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
-
 private fun String.shellQuote(): String = "'${replace("'", "'\"'\"'")}'"
 
 private fun String.commandId(): String {
@@ -1026,9 +797,8 @@ private fun String.commandId(): String {
     return "$readable.${hashCode().toUInt().toString(16)}"
 }
 
-private const val GRADLE_INSTALL_COMMAND = "pacman -U --noconfirm --config <(printf \"[options]\\nSigLevel = Never\\n\") https://archlinux.org/packages/extra/any/gradle/download/"
+private const val GRADLE_INSTALL_COMMAND = "pacman -U --noconfirm --config <(echo -e \"[options]\\nSigLevel = Never\") https://archlinux.org/packages/extra/any/gradle/download/"
 private const val GRADLE_COMMAND = "gradle"
-private const val GRADLE_TASK_MARKER = "__COSMIC_GRADLE_TASK__\t"
 
 private val GRADLE_PROJECT_TYPES = listOf(
     GradleProjectType("basic", "Basic Gradle build"),
@@ -1045,10 +815,10 @@ private val GRADLE_PROJECT_TYPES = listOf(
     GradleProjectType("scala-library", "Scala library", jvm = true, packageSupported = true, testFrameworkSupported = true),
     GradleProjectType("cpp-application", "C++ application", testFrameworkSupported = true),
     GradleProjectType("cpp-library", "C++ library", testFrameworkSupported = true),
-    GradleProjectType("swift-application", "Swift application", GradleProjectGenerator.SWIFT_APPLICATION),
-    GradleProjectType("swift-library", "Swift library", GradleProjectGenerator.SWIFT_LIBRARY),
-    GradleProjectType("c-application", "C application", GradleProjectGenerator.C_APPLICATION),
-    GradleProjectType("c-library", "C library", GradleProjectGenerator.C_LIBRARY)
+    GradleProjectType("swift-application", "Swift application"),
+    GradleProjectType("swift-library", "Swift library"),
+    GradleProjectType("c-application", "C application"),
+    GradleProjectType("c-library", "C library")
 )
 
 private val GRADLE_PROJECT_TYPES_BY_ID = GRADLE_PROJECT_TYPES.associateBy(GradleProjectType::id)
@@ -1075,9 +845,10 @@ private val PROJECT_NAME_REGEX = Regex("[A-Za-z0-9][A-Za-z0-9._-]*")
 private val JAVA_PACKAGE_REGEX = Regex("[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*")
 private val JAVA_VERSION_REGEX = Regex("[1-9][0-9]*")
 private val GRADLE_TASK_PATH_REGEX = Regex(":?[A-Za-z0-9_.-]+(?::[A-Za-z0-9_.-]+)*")
+private val GRADLE_TASK_LINE_REGEX = Regex("""^(\S+?)(?:\s+-\s+(.*))?$""")
 private val GRADLE_MAIN_CLASS_REGEX = Regex("""mainClass(?:\.set)?\s*\(?\s*["']([^"']+)["']\s*\)?""")
 private val APPLICATION_PLUGIN_REGEX = Regex(
-    """(?:id\s*\(?\s*["']application["']|`application`|apply\s+plugin:\s*["']application["'])"""
+    """id\s*\(?\s*["']application["']|`application`|apply\s+plugin:\s*["']application["']"""
 )
 private val GRADLE_INCLUDE_REGEX = Regex("""include\s*\((.*?)\)|include\s+([^\n]+)""", setOf(RegexOption.DOT_MATCHES_ALL))
 private val QUOTED_VALUE_REGEX = Regex("""["']([^"']+)["']""")
@@ -1097,24 +868,3 @@ private val GROOVY_PACKAGE_DECLARATION_REGEX = Regex("""(?m)^\s*package\s+([A-Za
 private val SCALA_PACKAGE_DECLARATION_REGEX = Regex("""(?m)^\s*package\s+([A-Za-z_][A-Za-z0-9_.]*)\s*$""")
 private val BLOCK_COMMENT_REGEX = Regex("""/\*.*?\*/""", RegexOption.DOT_MATCHES_ALL)
 private val LINE_COMMENT_REGEX = Regex("""(?m)//.*$""")
-
-private val GRADLE_TASK_DISCOVERY_INIT_SCRIPT = """
-    gradle.projectsLoaded {
-        gradle.rootProject {
-            tasks.register('cosmicListTasks') {
-                group = 'help'
-                description = 'Lists Gradle tasks for Cosmic IDE'
-                doLast {
-                    rootProject.allprojects.each { p ->
-                        p.tasks.each { t ->
-                            def groupName = (t.group ?: 'Other').replace('\\t', ' ').replace('\\n', ' ')
-                            def descriptionText = (t.description ?: '').replace('\\t', ' ').replace('\\n', ' ')
-                            println('__COSMIC_GRADLE_TASK__\\t' + t.path + '\\t' + groupName + '\\t' + descriptionText + '\\t' + p.path)
-                        }
-                    }
-                }
-            }
-        }
-    }
-""".trimIndent()
-
