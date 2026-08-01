@@ -21,14 +21,15 @@ class JavaPlugin : CosmicPlugin {
 
     private lateinit var pluginDir: String
 
-    override val setupActions = listOf(
-        PluginSetupAction(
-            id = "org.cosmicide.plugins.java.installLSP",
-            label = "Install Java LSP",
-            command = """rm -rf "$pluginDir/jdtls" && mkdir -p "$pluginDir/jdtls" && curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$pluginDir/jdtls"""",
-            description = "Install Eclipse JDT Language Server."
+    override val setupActions: List<PluginSetupAction>
+        get() = listOf(
+            PluginSetupAction(
+                id = "org.cosmicide.plugins.java.installLSP",
+                label = "Install Java LSP",
+                command = """rm -rf "$pluginDir/jdtls" && mkdir -p "$pluginDir/jdtls" && curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$pluginDir/jdtls"""",
+                description = "Install Eclipse JDT Language Server."
+            )
         )
-    )
 
     override fun activate(context: PluginContext) {
         val processService = context.services.require(IdeServices.TOOL_PROCESS)
@@ -37,14 +38,9 @@ class JavaPlugin : CosmicPlugin {
 
         context.registerDisposable(
             context.extensions.register(
-                point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
-                extension = JavaServerProvider(
-                    processService,
-                    context,
-                    context.logger
-                ),
-                ownerPluginId = context.descriptor.id,
-                priority = 350
+                point = EditorExtensionPoints.LSP_SERVER_PROVIDER, extension = JavaServerProvider(
+                    processService, context, context.logger
+                ), ownerPluginId = context.descriptor.id, priority = 350
             )
         )
 
@@ -110,18 +106,15 @@ private class JdtServerConnection(
         val workspaceId =
             "${request.project.name}-${request.project.root.absolutePath.hashCode().toUInt()}"
 
-        val configurationDir = pluginRoot
-            .resolve("cache/jdtls-config/$workspaceId")
-            .apply { mkdirs() }
+        val configurationDir =
+            pluginRoot.resolve("cache/jdtls-config/$workspaceId").apply { mkdirs() }
 
-        val workspaceDir = pluginRoot
-            .resolve("cache/jdtls-workspace/$workspaceId")
-            .apply { mkdirs() }
+        val workspaceDir =
+            pluginRoot.resolve("cache/jdtls-workspace/$workspaceId").apply { mkdirs() }
 
         process = processes.start(
             CommandRequest(
-                command = "java",
-                arguments = listOf(
+                command = "java", arguments = listOf(
                     "-Djdk.xml.maxGeneralEntitySizeLimit=0",
                     "-Djdk.xml.totalEntitySizeLimit=0",
                     "-Djdk.lang.Process.launchMechanism=FORK",
@@ -150,13 +143,10 @@ private class JdtServerConnection(
                     configurationDir.absolutePath,
                     "-data",
                     workspaceDir.absolutePath
-                ),
-                workingDirectory = request.project.root,
-                environment = mapOf(
+                ), workingDirectory = request.project.root, environment = mapOf(
                     "COSMIC_PROJECT_ROOT" to request.project.root.absolutePath
                 )
-            ),
-            redirectErrorStream = false
+            ), redirectErrorStream = false
         ).also {
             drainStderr(it.errorStream)
             logger.info("JDT LS started for ${request.project.name}")
@@ -198,11 +188,8 @@ private class JdtServerConnection(
 }
 
 private fun findEquinoxLauncher(jdtlsDir: File): File? {
-    return jdtlsDir.resolve("plugins")
-        .listFiles()
-        ?.firstOrNull {
-            it.name.startsWith("org.eclipse.equinox.launcher_") &&
-                    it.extension == "jar"
+    return jdtlsDir.resolve("plugins").listFiles()?.firstOrNull {
+        it.name.startsWith("org.eclipse.equinox.launcher_") && it.extension == "jar"
         }
 }
 

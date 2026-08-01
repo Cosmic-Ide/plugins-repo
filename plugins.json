@@ -19,7 +19,7 @@
     "detailedDescription": "## Java development\n\nBuild and maintain Java projects with code intelligence powered by Eclipse JDT Language Server.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, code actions, and inline assistance from **Eclipse JDT LS**\n- Support for Java source files and common JVM project structures\n- Automatic integration with Gradle and Maven projects\n- Signature help, inlay hints, formatting, and import organization\n\n### Setup\n\nAfter installation, run **Install JDT LS** once. Java support becomes available when you open a project containing Java source files.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/java-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/java-support-1.0.0.zip",
-    "sha256": "f793a0f67a34902590d83c0a861774d524ae2123656d30f9f57988d2f5ebec96"
+    "sha256": "7e9b53c4d537b46d3cdbcf31624cfd106b08b1933dc152c4bab8efb7b4d67a0c"
   },
   {
     "id": "org.cosmicide.plugins.gleam",
