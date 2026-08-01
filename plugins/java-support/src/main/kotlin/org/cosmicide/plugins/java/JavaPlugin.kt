@@ -19,17 +19,21 @@ import java.io.OutputStream
 
 class JavaPlugin : CosmicPlugin {
 
+    private lateinit var pluginDir: String
+
     override val setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.java.installJdtls",
             label = "Install JDT LS",
-            command = JDTLS_INSTALL_COMMAND,
+            command = """rm -rf "$pluginDir/jdtls" && mkdir -p "$pluginDir/jdtls" && curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$pluginDir/jdtls"""",
             description = "Install Eclipse JDT Language Server."
         )
     )
 
     override fun activate(context: PluginContext) {
         val processService = context.services.require(IdeServices.TOOL_PROCESS)
+
+        pluginDir = context.services.require(AndroidPluginServices.PLUGIN_DIRECTORY).absolutePath
 
         context.registerDisposable(
             context.extensions.register(
@@ -201,9 +205,6 @@ private fun findEquinoxLauncher(jdtlsDir: File): File? {
                     it.extension == "jar"
         }
 }
-
-private const val JDTLS_INSTALL_COMMAND =
-    $$"""rm -rf "$APP_FILES_DIR/jdtls" && mkdir -p "$APP_FILES_DIR/jdtls" && curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$APP_FILES_DIR/jdtls""""
 
 private const val JAVA_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/java/syntaxes/java.tmLanguage.json"
