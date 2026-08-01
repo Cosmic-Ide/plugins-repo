@@ -32,6 +32,7 @@
             <option value="$PROJECT_DIR$/plugins/gleam-support" />
             <option value="$PROJECT_DIR$/plugins/go-support" />
             <option value="$PROJECT_DIR$/plugins/gradle-support" />
+            <option value="$PROJECT_DIR$/plugins/java-support" />
             <option value="$PROJECT_DIR$/plugins/lua-support" />
             <option value="$PROJECT_DIR$/plugins/maven-support" />
             <option value="$PROJECT_DIR$/plugins/python-support" />

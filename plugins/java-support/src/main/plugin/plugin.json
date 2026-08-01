@@ -1,0 +1,16 @@
+{
+  "id": "org.cosmicide.plugins.java",
+  "name": "Java Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.java.JavaPlugin",
+  "description": "Java code intelligence powered by Eclipse JDT LS.",
+  "detailedDescription": "## Java development\n\nBuild and maintain Java projects with code intelligence powered by Eclipse JDT Language Server.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, code actions, and inline assistance from **Eclipse JDT LS**\n- Support for Java source files and common JVM project structures\n- Automatic integration with Gradle and Maven projects\n- Signature help, inlay hints, formatting, and import organization\n\n### Setup\n\nAfter installation, run **Install JDT LS** once. Java support becomes available when you open a project containing Java source files.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/java-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "language-server"
+  ]
+}

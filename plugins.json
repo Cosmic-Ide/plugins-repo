@@ -11,6 +11,17 @@
     "sha256": "08f90941732f7c4f4634c7dd2fe311e02808da17672e566d2c0bcb0d6c8980cd"
   },
   {
+    "id": "org.cosmicide.plugins.java",
+    "name": "Java Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Java code intelligence powered by Eclipse JDT LS.",
+    "detailedDescription": "## Java development\n\nBuild and maintain Java projects with code intelligence powered by Eclipse JDT Language Server.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, code actions, and inline assistance from **Eclipse JDT LS**\n- Support for Java source files and common JVM project structures\n- Automatic integration with Gradle and Maven projects\n- Signature help, inlay hints, formatting, and import organization\n\n### Setup\n\nAfter installation, run **Install JDT LS** once. Java support becomes available when you open a project containing Java source files.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/java-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/java-support-1.0.0.zip",
+    "sha256": "bfda1c808be80ffb0a6ae71bb00cc3097f3c78663976208b16a962c526d4254f"
+  },
+  {
     "id": "org.cosmicide.plugins.gleam",
     "name": "Gleam Support",
     "version": "1.0.0",

@@ -44,6 +44,7 @@ project(":feature:project").projectDir = cosmicIdeDir.resolve("feature/project")
 include(":ide-api")
 project(":ide-api").projectDir = cosmicIdeDir.resolve("ide-api")
 
+include(":plugins:java-support")
 include(":plugins:rust-support")
 include(":plugins:gleam-support")
 include(":plugins:go-support")
