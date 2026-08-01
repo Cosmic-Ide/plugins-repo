@@ -94,8 +94,8 @@ private class JdtServerConnection(
         }
 
         val filesDir = File(
-            requireNotNull(System.getenv("FILES_DIR")) {
-                "FILES_DIR is not set"
+            requireNotNull(System.getenv("APP_FILES_DIR")) {
+                "APP_FILES_DIR is not set"
             }
         )
 
@@ -203,7 +203,7 @@ private fun findEquinoxLauncher(jdtlsDir: File): File? {
 }
 
 private const val JDTLS_INSTALL_COMMAND =
-    $$"""rm -rf "$FILES_DIR/jdtls" && mkdir -p "$FILES_DIR/jdtls" && curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$FILES_DIR/jdtls""""
+    $$"""rm -rf "$APP_FILES_DIR/jdtls" && mkdir -p "$APP_FILES_DIR/jdtls" && curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$APP_FILES_DIR/jdtls""""
 
 private const val JAVA_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/java/syntaxes/java.tmLanguage.json"

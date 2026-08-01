@@ -805,10 +805,6 @@ private val GRADLE_PROJECT_TYPES = listOf(
     GradleProjectType("scala-library", "Scala library", jvm = true, packageSupported = true, testFrameworkSupported = true),
     GradleProjectType("cpp-application", "C++ application", testFrameworkSupported = true),
     GradleProjectType("cpp-library", "C++ library", testFrameworkSupported = true),
-    GradleProjectType("swift-application", "Swift application"),
-    GradleProjectType("swift-library", "Swift library"),
-    GradleProjectType("c-application", "C application"),
-    GradleProjectType("c-library", "C library")
 )
 
 private val GRADLE_PROJECT_TYPES_BY_ID = GRADLE_PROJECT_TYPES.associateBy(GradleProjectType::id)
