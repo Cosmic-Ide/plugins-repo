@@ -1,6 +1,5 @@
 package org.cosmicide.plugins.java
 
-import org.cosmicide.plugins.AndroidPluginServices
 import org.cosmicide.editor.EditorExtensionPoints
 import org.cosmicide.editor.LspServerConnection
 import org.cosmicide.editor.LspServerDefinition
@@ -10,6 +9,7 @@ import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugins.AndroidPluginServices
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
 import org.cosmicide.project.ToolProcessService
@@ -23,8 +23,8 @@ class JavaPlugin : CosmicPlugin {
 
     override val setupActions = listOf(
         PluginSetupAction(
-            id = "org.cosmicide.plugins.java.installJdtls",
-            label = "Install JDT LS",
+            id = "org.cosmicide.plugins.java.installLSP",
+            label = "Install Java LSP",
             command = """rm -rf "$pluginDir/jdtls" && mkdir -p "$pluginDir/jdtls" && curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$pluginDir/jdtls"""",
             description = "Install Eclipse JDT Language Server."
         )
