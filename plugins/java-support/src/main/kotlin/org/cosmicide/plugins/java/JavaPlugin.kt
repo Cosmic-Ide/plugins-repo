@@ -1,5 +1,6 @@
 package org.cosmicide.plugins.java
 
+import org.cosmicide.plugins.AndroidPluginServices
 import org.cosmicide.editor.EditorExtensionPoints
 import org.cosmicide.editor.LspServerConnection
 import org.cosmicide.editor.LspServerDefinition
@@ -35,6 +36,7 @@ class JavaPlugin : CosmicPlugin {
                 point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
                 extension = JavaServerProvider(
                     processService,
+                    context,
                     context.logger
                 ),
                 ownerPluginId = context.descriptor.id,
@@ -48,6 +50,7 @@ class JavaPlugin : CosmicPlugin {
 
 private class JavaServerProvider(
     private val processes: ToolProcessService,
+    private val pluginContext: PluginContext,
     private val logger: PluginLogger
 ) : LspServerProvider {
 
@@ -68,7 +71,7 @@ private class JavaServerProvider(
             fileExtensions = setOf("java"),
             displayName = "JDT LS",
             connectionFactory = {
-                JdtServerConnection(processes, it, logger)
+                JdtServerConnection(processes, it, pluginContext, logger)
             },
             textMateGrammarLink = JAVA_TEXTMATE_GRAMMAR,
             enableInlayHints = true,
@@ -81,6 +84,7 @@ private class JavaServerProvider(
 private class JdtServerConnection(
     private val processes: ToolProcessService,
     private val request: LspServerRequest,
+    private val pluginContext: PluginContext,
     private val logger: PluginLogger
 ) : LspServerConnection {
 
@@ -93,24 +97,20 @@ private class JdtServerConnection(
             "JDT LS connection has already started"
         }
 
-        val filesDir = File(
-            requireNotNull(System.getenv("APP_FILES_DIR")) {
-                "APP_FILES_DIR is not set"
-            }
-        )
+        val pluginRoot = pluginContext.services.get(AndroidPluginServices.PLUGIN_DIRECTORY)!!
 
-        val jdtlsDir = filesDir.resolve("jdtls")
+        val jdtlsDir = pluginRoot.resolve("jdtls")
         val launcherJar = findEquinoxLauncher(jdtlsDir)
             ?: error("Equinox launcher not found in ${jdtlsDir.resolve("plugins")}")
 
         val workspaceId =
             "${request.project.name}-${request.project.root.absolutePath.hashCode().toUInt()}"
 
-        val configurationDir = filesDir
+        val configurationDir = pluginRoot
             .resolve("cache/jdtls-config/$workspaceId")
             .apply { mkdirs() }
 
-        val workspaceDir = filesDir
+        val workspaceDir = pluginRoot
             .resolve("cache/jdtls-workspace/$workspaceId")
             .apply { mkdirs() }
 
