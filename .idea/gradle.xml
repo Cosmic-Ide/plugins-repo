@@ -38,6 +38,7 @@
             <option value="$PROJECT_DIR$/plugins/python-support" />
             <option value="$PROJECT_DIR$/plugins/rust-support" />
             <option value="$PROJECT_DIR$/plugins/scala-support" />
+            <option value="$PROJECT_DIR$/plugins/web-support" />
           </set>
         </option>
       </GradleProjectSettings>

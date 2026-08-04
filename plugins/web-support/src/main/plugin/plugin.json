@@ -1,0 +1,20 @@
+{
+  "id": "org.cosmicide.plugins.web",
+  "name": "JavaScript & TypeScript Language Features",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.web.WebPlugin",
+  "description": "Language intelligence for JavaScript and TypeScript powered by TypeScript Language Server.",
+  "detailedDescription": "## JavaScript & TypeScript language support\n\nEdit modern JavaScript and TypeScript projects with fast, IDE-quality language intelligence powered by **typescript-language-server**.\n\n### Features\n\n- Intelligent code completion\n- Real-time diagnostics and error reporting\n- Go to Definition, Find References, and Rename Symbol\n- Signature Help, Hover, and Inlay Hints\n- JSX and TSX support\n- JavaScript, TypeScript, React, and modern ECMAScript support\n\n### Supported Languages\n\n- JavaScript (.js, .mjs, .cjs)\n- JSX (.jsx)\n- TypeScript (.ts, .mts, .cts)\n- TSX (.tsx)\n\n### Setup\n\nAfter installing the plugin, run **Install Web related packages** to install Node.js, TypeScript, and the TypeScript Language Server.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/web-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "language-server",
+    "project-type",
+    "project-creation",
+    "project-commands",
+    "project-tasks"
+  ]
+}

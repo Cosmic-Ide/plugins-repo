@@ -1,5 +1,16 @@
 [
   {
+    "id": "org.cosmicide.plugins.web",
+    "name": "JavaScript & TypeScript Language Features",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Language intelligence for JavaScript and TypeScript powered by TypeScript Language Server.",
+    "detailedDescription": "## JavaScript & TypeScript language support\n\nEdit modern JavaScript and TypeScript projects with fast, IDE-quality language intelligence powered by **typescript-language-server**.\n\n### Features\n\n- Intelligent code completion\n- Real-time diagnostics and error reporting\n- Go to Definition, Find References, and Rename Symbol\n- Signature Help, Hover, and Inlay Hints\n- JSX and TSX support\n- JavaScript, TypeScript, React, and modern ECMAScript support\n\n### Supported Languages\n\n- JavaScript (.js, .mjs, .cjs)\n- JSX (.jsx)\n- TypeScript (.ts, .mts, .cts)\n- TSX (.tsx)\n\n### Setup\n\nAfter installing the plugin, run **Install Web related packages** to install Node.js, TypeScript, and the TypeScript Language Server.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/web-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/web-support-1.0.0.zip",
+    "sha256": "ffe0109a46db395d99196a22e79dfb4f1bb2d88f6023358cc2ac51ababeb9505"
+  },
+  {
     "id": "org.cosmicide.plugins.rust",
     "name": "Rust Support",
     "version": "1.0.0",
@@ -52,7 +63,7 @@
     "detailedDescription": "## Gradle development\n\nCreate and maintain Gradle builds with integrated lifecycle, dependency, and custom task workflows.\n\n### Features\n\n- Automatic detection of projects containing Gradle wrapper or build files\n- Java, Kotlin, Groovy, and Scala project templates\n- Toolbar run actions for detected entry points\n- Common build, test, and run commands\n- A searchable Gradle task picker with all available tasks\n- Support for both Gradle wrapper (./gradlew) and system Gradle\n\n### Setup\n\nAfter installation, run **Install Gradle** once. Gradle projects are recognized when you open a directory containing `gradlew`, `build.gradle`, or `build.gradle.kts`. Uses Cosmic IDE's selected JDK.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gradle-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/gradle-support-1.0.0.zip",
-    "sha256": "7151e8a7b803b024c117ad9d48aa8656d6fe9d7a42e0f7e041a5b48d48a66a70"
+    "sha256": "a4561aa25eb4dfa086b08cd79f24456ac207496f6dfc305f364749bede58f1cf"
   },
   {
     "id": "org.cosmicide.plugins.lua",
