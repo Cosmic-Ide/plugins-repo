@@ -354,7 +354,11 @@ private class WebServerConnection(
         check(process == null) { "web lsp connection has already started" }
         process = processes.start(
             CommandRequest(
-                command = "typescript-language-server",
+                command = when (request.extension) {
+                    "css" -> "vscode-css-languageserver"
+                    "html" -> "vscode-html-languageserver"
+                    else -> "typescript-language-server"
+                },
                 arguments = listOf(
                     "--stdio"
                 ),
@@ -407,9 +411,10 @@ private class WebServerConnection(
 }
 
 private const val INSTALL_COMMAND =
-    "pacman -S --needed nodejs npm yarn typescript typescript-language-server"
+    "pacman -S --needed nodejs npm yarn typescript typescript-language-server vscode-css-languageserver vscode-html-languageserver"
 
-private val SUPPORTED_FILE_EXTENSIONS = setOf("js", "mjs", "cjs", "jsx", "ts", "mts", "cts", "tsx")
+private val SUPPORTED_FILE_EXTENSIONS =
+    setOf("js", "mjs", "cjs", "jsx", "ts", "mts", "cts", "tsx", "css")
 
 private fun grammarLinkFor(extension: String): String =
     when (extension.lowercase()) {
@@ -424,6 +429,12 @@ private fun grammarLinkFor(extension: String): String =
 
         "tsx" ->
             TYPESCRIPT_REACT_GRAMMAR
+
+        "css", "scss", "less" ->
+            CSS_GRAMMAR
+
+        "html" ->
+            HTML_GRAMMAR
 
         else ->
             JAVASCRIPT_GRAMMAR
@@ -440,3 +451,9 @@ private const val TYPESCRIPT_GRAMMAR =
 
 private const val TYPESCRIPT_REACT_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/typescript-basics/syntaxes/TypeScriptReact.tmLanguage.json"
+
+private const val CSS_GRAMMAR =
+    "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/css/syntaxes/css.tmLanguage.json"
+
+private const val HTML_GRAMMAR =
+    "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/html/syntaxes/html.tmLanguage.json"

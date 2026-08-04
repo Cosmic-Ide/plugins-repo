@@ -8,7 +8,7 @@
     "detailedDescription": "## JavaScript & TypeScript language support\n\nEdit modern JavaScript and TypeScript projects with fast, IDE-quality language intelligence powered by **typescript-language-server**.\n\n### Features\n\n- Intelligent code completion\n- Real-time diagnostics and error reporting\n- Go to Definition, Find References, and Rename Symbol\n- Signature Help, Hover, and Inlay Hints\n- JSX and TSX support\n- JavaScript, TypeScript, React, and modern ECMAScript support\n\n### Supported Languages\n\n- JavaScript (.js, .mjs, .cjs)\n- JSX (.jsx)\n- TypeScript (.ts, .mts, .cts)\n- TSX (.tsx)\n\n### Setup\n\nAfter installing the plugin, run **Install Web related packages** to install Node.js, TypeScript, and the TypeScript Language Server.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/web-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/web-support-1.0.0.zip",
-    "sha256": "ffe0109a46db395d99196a22e79dfb4f1bb2d88f6023358cc2ac51ababeb9505"
+    "sha256": "624e55c166b938ddaf85cc474b3b93888295a06d7f0834bdf13eb7b44caa599f"
   },
   {
     "id": "org.cosmicide.plugins.rust",
@@ -130,5 +130,27 @@
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/scala-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/scala-support-1.0.0.zip",
     "sha256": "60825ebb6b3dba4b09a6e6c4a7b62e855001b7ef00cab17ca415f868aaa8eae6"
+  },
+  {
+    "id": "org.cosmicide.plugins.md",
+    "name": "Markdown Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Markdown Code Intelligence.",
+    "detailedDescription": "## Markdown language support\n\nEdit Markdown documents with real-time diagnostics, document symbols, workspace link validation, and smart auto-completion powered by **vscode-markdown-languageserver**.\n\n### Features\n\n- Header and link completion\n- Workspace link checking\n- TextMate syntax highlighting\n- Document structure outlines",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/md-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/md-support-1.0.0.zip",
+    "sha256": "05541e79b0106f074c4e579611fd85a48c0ee6d59016cc0f71e73a6ef744863e"
+  },
+  {
+    "id": "org.cosmicide.plugins.json",
+    "name": "JSON Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "JSON & JSONC Code Intelligence.",
+    "detailedDescription": "## JSON language support\n\nEdit JSON and JSONC configuration files with real-time validation, auto-completion, schema validation, and formatting powered by **vscode-json-languageserver**.\n\n### Features\n\n- Auto-completion for properties and values\n- Syntax validation and error diagnostics\n- Document formatting and folding ranges\n- Support for standard JSON, JSONC (with comments), and JSON5",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/json-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/json-support-1.0.0.zip",
+    "sha256": "effc6f254e3aae079b9454a33a926394d486cc9853ae2f6529e750ab43475798"
   }
 ]
