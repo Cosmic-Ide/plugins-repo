@@ -1,4 +1,4 @@
--keep class org.cosmicide.plugins.bun.WebPlugin {
+-keep class org.cosmicide.plugins.vue.VuePlugin {
     public <init>();
     public *;
 }

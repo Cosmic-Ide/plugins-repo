@@ -1,0 +1,18 @@
+{
+  "id": "org.cosmicide.plugins.bun",
+  "name": "Bun Project Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.bun.BunPlugin",
+  "description": "Project management, scaffolding, and build support powered by the Bun runtime.",
+  "detailedDescription": "## Bun Project Support\n\nProject lifecycle management using **Bun** for ultra-fast package management, scaffolding, and script execution.\n\n### Features\n\n- Bun project recognition (`package.json`, `bun.lock`, `bun.lockb`, `tsconfig.json`, `jsconfig.json`)\n- Project scaffolding via `bun create` (Vite, Next.js, React, Vue, Svelte, or custom commands)\n- Integrated Bun commands (`bun install`, `bun dev`, `bun run build`, `bun start`, `bun test`)\n\n### Setup\n\nRun **Install Bun** to install the runtime via the official install script and upgrade to canary.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/bun-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "project-type",
+    "project-creation",
+    "project-commands"
+  ]
+}

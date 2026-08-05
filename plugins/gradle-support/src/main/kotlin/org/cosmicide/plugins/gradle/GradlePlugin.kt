@@ -788,7 +788,7 @@ private fun String.commandId(): String {
 }
 
 private const val GRADLE_INSTALL_COMMAND =
-    "pacman -S --needed jdk-openjdk which && pacman -U --noconfirm --config <(echo -e \"[options]\\nSigLevel = Never\") https://archlinux.org/packages/extra/any/gradle/download/"
+    "pacman -S --needed which && pacman -U --noconfirm --config <(echo -e \"[options]\\nSigLevel = Never\") https://archlinux.org/packages/extra/any/gradle/download/"
 private const val GRADLE_COMMAND = "gradle"
 
 private val GRADLE_PROJECT_TYPES = listOf(

@@ -1,0 +1,16 @@
+{
+  "id": "org.cosmicide.plugins.vue",
+  "name": "Vue Language Features",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.vue.VuePlugin",
+  "description": "Language intelligence for Vue Single File Components powered by vue-language-server.",
+  "detailedDescription": "## Vue Language Support\n\nEdit `.vue` Single File Components (SFC) with fast language intelligence powered by **vue-language-server**.\n\n### Features\n\n- Intelligent template and script code completion\n- Real-time diagnostics and syntax validation\n- Go to Definition, References, and Hover help\n- Signature Help and Inlay Hints\n\n### Supported Files\n\n- Vue Single File Components (`.vue`)\n\n### Setup\n\nRun **Install Vue Language Server** to install `vue-language-server` via pacman.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/vue-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "language-server"
+  ]
+}

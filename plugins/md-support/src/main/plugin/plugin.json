@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "entryClass": "org.cosmicide.plugins.md.MDPlugin",
   "description": "Markdown Code Intelligence.",
-  "detailedDescription": "## Markdown language support\n\nEdit Markdown documents with real-time diagnostics, document symbols, workspace link validation, and smart auto-completion powered by **vscode-markdown-languageserver**.\n\n### Features\n\n- Header and link completion\n- Workspace link checking\n- TextMate syntax highlighting\n- Document structure outlines",
+  "detailedDescription": "## Markdown language support\n\nEdit Markdown documents with real-time diagnostics, document symbols, workspace link validation, and smart auto-completion powered by **markdown-oxide**.\n\n### Features\n\n- Header and link completion\n- Workspace link checking\n- TextMate syntax highlighting\n- Document structure outlines",
   "author": "Cosmic IDE",
   "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/md-support",
   "classPath": [
