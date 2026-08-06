@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="17">
+      <module name="buildSrc.main" target="25" />
+      <module name="buildSrc.test" target="25" />
       <module name="CosmicIDEPlugins.plugins.elixir-support" target="25" />
     </bytecodeTargetLevel>
   </component>

@@ -1,4 +1,4 @@
--keep class org.cosmicide.plugins.bun.WebPlugin {
+-keep class org.cosmicide.plugins.web.WebPlugin {
     public <init>();
     public *;
 }

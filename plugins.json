@@ -8,7 +8,7 @@
     "detailedDescription": "## JavaScript & TypeScript language support\n\nEdit modern JavaScript and TypeScript projects with fast, IDE-quality language intelligence powered by **typescript-language-server**.\n\n### Features\n\n- Intelligent code completion\n- Real-time diagnostics and error reporting\n- Go to Definition, Find References, and Rename Symbol\n- Signature Help, Hover, and Inlay Hints\n- JSX and TSX support\n- JavaScript, TypeScript, React, and modern ECMAScript support\n\n### Supported Languages\n\n- JavaScript (.js, .mjs, .cjs)\n- JSX (.jsx)\n- TypeScript (.ts, .mts, .cts)\n- TSX (.tsx)\n\n### Setup\n\nAfter installing the plugin, run **Install Web related packages** to install Node.js, TypeScript, and the TypeScript Language Server.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/web-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/web-support-1.0.0.zip",
-    "sha256": "4b84173889600ba43506568005dd2cf3fab4069545f7c55596884b95c0011206"
+    "sha256": "7b2a1637424048018624338ef408b5c512973cefc87547ee1db5c608ea4aba40"
   },
   {
     "id": "org.cosmicide.plugins.rust",
