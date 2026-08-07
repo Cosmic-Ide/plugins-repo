@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/plugins" />
+            <option value="$PROJECT_DIR$/plugins/android-support" />
             <option value="$PROJECT_DIR$/plugins/bun-support" />
             <option value="$PROJECT_DIR$/plugins/clangd-support" />
             <option value="$PROJECT_DIR$/plugins/cmake-support" />

@@ -162,7 +162,7 @@
     "detailedDescription": "## Bun Project Support\n\nProject lifecycle management using **Bun** for ultra-fast package management, scaffolding, and script execution.\n\n### Features\n\n- Bun project recognition (`package.json`, `bun.lock`, `bun.lockb`, `tsconfig.json`, `jsconfig.json`)\n- Project scaffolding via `bun create` (Vite, Next.js, React, Vue, Svelte, or custom commands)\n- Integrated Bun commands (`bun install`, `bun dev`, `bun run build`, `bun start`, `bun test`)\n\n### Setup\n\nRun **Install Bun** to install the runtime via the official install script and upgrade to canary.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/bun-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/bun-support-1.0.0.zip",
-    "sha256": "5b738e442873bc5e123ee44a93cdd4d3a06aafb2f15d8b20ea11ea1809bb2653"
+    "sha256": "d87a3a7a8084a718ef66e6d7982109f47991192aacb0aaf5d1a4f664222609e5"
   },
   {
     "id": "org.cosmicide.plugins.vue",
@@ -174,5 +174,16 @@
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/vue-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/vue-support-1.0.0.zip",
     "sha256": "2ba090310d666e190a5170e7b61be75bc9abff75a2e60f89f4a04f7fb99f1c9d"
+  },
+  {
+    "id": "org.cosmicide.plugins.android",
+    "name": "Android Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Android SDK management and build tools integration.",
+    "detailedDescription": "## Android Support\n\nAndroid SDK management and build tools integration for Cosmic IDE.\n\n### Features\n\n- Android SDK status monitoring\n- Automated Android SDK and Build Tools installation\n\n### Setup\n\nRun **Install Android SDK** to download and install the Android Command Line Tools and Build Tools 37.0.0.",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/android-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/android-support-1.0.0.zip",
+    "sha256": "7457d773973d9cc9804281869ae56931d052a69450d1c1704b69d6f87d53743e"
   }
 ]

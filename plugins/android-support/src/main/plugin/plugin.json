@@ -1,0 +1,16 @@
+{
+  "id": "org.cosmicide.plugins.android",
+  "name": "Android Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.android.AndroidPlugin",
+  "description": "Android SDK management and build tools integration.",
+  "detailedDescription": "## Android Support\n\nAndroid SDK management and build tools integration for Cosmic IDE.\n\n### Features\n\n- Android SDK status monitoring\n- Automated Android SDK and Build Tools installation\n\n### Setup\n\nRun **Install Android SDK** to download and install the Android Command Line Tools and Build Tools 37.0.0.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/android-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "settings-ui"
+  ]
+}

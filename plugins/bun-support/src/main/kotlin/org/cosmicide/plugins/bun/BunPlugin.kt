@@ -30,7 +30,7 @@ class BunPlugin : CosmicPlugin {
             id = "org.cosmicide.plugins.bun.installToolchain",
             label = "Install Bun",
             command = INSTALL_COMMAND,
-            description = "Install the Bun runtime via the official install script and upgrade to canary."
+            description = "Install the Bun runtime via official script and upgrade to canary."
         )
     )
 
@@ -44,14 +44,12 @@ class BunPlugin : CosmicPlugin {
                 extension = BunProjectTypeProvider,
                 ownerPluginId = owner,
                 priority = 360
-            ),
-            context.extensions.register(
+            ), context.extensions.register(
                 point = ProjectExtensionPoints.CREATION_PROVIDER,
                 extension = BunProjectCreationProvider(commandService),
                 ownerPluginId = owner,
                 priority = 360
-            ),
-            context.extensions.register(
+            ), context.extensions.register(
                 point = ProjectExtensionPoints.COMMAND_PROVIDER,
                 extension = BunProjectCommandProvider,
                 ownerPluginId = owner,
@@ -71,9 +69,9 @@ private object BunProjectTypeProvider : ProjectTypeProvider {
     override val fileExtension = "ts"
 
     override fun supports(projectRoot: File): Boolean {
-        return projectRoot.resolve("package.json").isFile ||
-                projectRoot.resolve("bun.lockb").isFile ||
-                projectRoot.resolve("bun.lock").isFile
+        return projectRoot.resolve("package.json").isFile || projectRoot.resolve("bun.lockb").isFile || projectRoot.resolve(
+            "bun.lock"
+        ).isFile
     }
 }
 
@@ -83,44 +81,80 @@ private class BunProjectCreationProvider(
     override val id = "org.cosmicide.plugins.bun.createProject"
     override val displayName = "New Bun project"
     override val description =
-        "Create an empty Bun project or scaffold one using Vite, Next.js, React, Vue, Svelte, or a custom command."
+        "Create an empty Bun project or scaffold using Vite, Next.js, React, Vue, Svelte, or a custom command."
 
     override val actionLabel = "Create"
 
     override val fields = listOf(
         PluginFormField(
-            id = "name",
-            label = "Project name",
-            placeholder = "my-bun-app",
-            required = true
-        ),
-        PluginFormField(
+            id = "name", label = "Project name", placeholder = "my-bun-app", required = true
+        ), PluginFormField(
             id = "template",
             label = "Project template",
             type = PluginFormFieldType.CHOICE,
             defaultValue = "bun",
             options = listOf(
                 PluginFormOption("bun", "Empty Bun project"),
-                PluginFormOption("vite", "Vite (Vanilla TS/JS)"),
+                PluginFormOption("vite", "Vite (Vanilla)"),
                 PluginFormOption("react", "React (Vite)"),
                 PluginFormOption("next", "Next.js"),
                 PluginFormOption("vue", "Vue (Vite)"),
                 PluginFormOption("svelte", "Svelte (Vite)"),
+                PluginFormOption("lit", "Lit (Vite)"),
+                PluginFormOption("solid", "Solid (Vite)"),
+                PluginFormOption("qwik", "Qwik (Vite)"),
                 PluginFormOption("custom", "Custom command")
             )
         ),
+
+        // Language Option (Visible for Vite-based templates)
+        PluginFormField(
+            id = "language",
+            label = "Language variant",
+            type = PluginFormFieldType.CHOICE,
+            defaultValue = "ts",
+            options = listOf(
+                PluginFormOption("ts", "TypeScript"), PluginFormOption("js", "JavaScript")
+            ),
+            visibleWhen = mapOf(
+                "template" to "vite", "template" to "react", "template" to "vue"
+            )
+        ),
+
+        // Next.js Specific Options
+        PluginFormField(
+            id = "next_app_router",
+            label = "Use App Router",
+            type = PluginFormFieldType.CHOICE,
+            defaultValue = "yes",
+            options = listOf(
+                PluginFormOption("yes", "Yes (Recommended)"),
+                PluginFormOption("no", "No (Pages Router)")
+            ),
+            visibleWhen = mapOf("template" to "next")
+        ), PluginFormField(
+            id = "next_tailwind",
+            label = "Include Tailwind CSS",
+            type = PluginFormFieldType.CHOICE,
+            defaultValue = "yes",
+            options = listOf(
+                PluginFormOption("yes", "Yes"), PluginFormOption("no", "No")
+            ),
+            visibleWhen = mapOf("template" to "next")
+        ),
+
+        // Custom Command Option
         PluginFormField(
             id = "command",
             label = "Create command",
-            placeholder = "bun create next-app",
+            placeholder = "bun create my-cli-app {name}",
             description = "Optional. Used only when Project template is Custom command.",
             visibleWhen = mapOf("template" to "custom")
         )
     )
 
     override suspend fun create(
-        request: ProjectCreationRequest,
-        reporter: OperationReporter
+        request: ProjectCreationRequest, reporter: OperationReporter
     ): ProjectCreationResult {
         val name = request.values["name"].orEmpty().trim()
         require(name.matches(Regex("[A-Za-z0-9][A-Za-z0-9_.-]*"))) {
@@ -139,7 +173,7 @@ private class BunProjectCreationProvider(
         val result = if (template == "bun") {
             createEmptyBunProject(root, reporter)
         } else {
-            val commandParts = buildScaffoldCommand(template, name, request.values["command"])
+            val commandParts = buildScaffoldCommand(template, name, request.values)
             commands.execute(
                 CommandRequest(
                     command = commandParts.first(),
@@ -149,8 +183,7 @@ private class BunProjectCreationProvider(
             ) { output ->
                 reporter.report(
                     OperationUpdate(
-                        message = output,
-                        kind = OperationMessageKind.OUTPUT
+                        message = output, kind = OperationMessageKind.OUTPUT
                     )
                 )
             }
@@ -158,10 +191,8 @@ private class BunProjectCreationProvider(
 
         if (!result.successful) {
             if (root.exists()) root.deleteRecursively()
-            error(
-                result.output.lineSequence().lastOrNull { it.isNotBlank() }
-                    ?: "Project scaffolding failed with exit code ${result.exitCode}"
-            )
+            error(result.output.lineSequence().lastOrNull { it.isNotBlank() }
+                ?: "Project scaffolding failed with exit code ${result.exitCode}")
         }
 
         return ProjectCreationResult(
@@ -171,39 +202,128 @@ private class BunProjectCreationProvider(
     }
 
     private suspend fun createEmptyBunProject(
-        root: File,
-        reporter: OperationReporter
+        root: File, reporter: OperationReporter
     ): CommandResult {
         check(root.mkdirs()) { "Failed to create directory ${root.absolutePath}" }
         return commands.execute(
             CommandRequest(
-                command = "bun",
-                arguments = listOf("init", "-y"),
-                workingDirectory = root
+                command = "bun", arguments = listOf("init", "-y"), workingDirectory = root
             )
         ) { output ->
             reporter.report(
                 OperationUpdate(
-                    message = output,
-                    kind = OperationMessageKind.OUTPUT
+                    message = output, kind = OperationMessageKind.OUTPUT
                 )
             )
         }
     }
 
     private fun buildScaffoldCommand(
-        template: String,
-        name: String,
-        customCommand: String?
+        template: String, name: String, values: Map<String, String>
     ): List<String> {
+        val lang = values["language"] ?: "ts"
+
         return when (template) {
-            "vite" -> listOf("bun", "create", "vite", name, "--", "--template", "vanilla-ts")
-            "react" -> listOf("bun", "create", "vite", name, "--", "--template", "react-ts")
-            "next" -> listOf("bun", "create", "next-app", name)
-            "vue" -> listOf("bun", "create", "vite", name, "--", "--template", "vue-ts")
-            "svelte" -> listOf("bun", "create", "vite", name, "--", "--template", "svelte-ts")
+            "vite" -> listOf(
+                "yes",
+                "|",
+                "bun",
+                "create",
+                "vite",
+                name,
+                "--template",
+                if (lang == "ts") "vanilla-ts" else "vanilla"
+            )
+
+            "react" -> listOf(
+                "yes",
+                "|",
+                "bun",
+                "create",
+                "vite",
+                name,
+                "--template",
+                if (lang == "ts") "react-ts" else "react"
+            )
+
+            "vue" -> listOf(
+                "yes",
+                "|",
+                "bun",
+                "create",
+                "vite",
+                name,
+                "--template",
+                if (lang == "ts") "vue-ts" else "vue"
+            )
+
+            "svelte" -> listOf(
+                "yes",
+                "|",
+                "bun",
+                "create",
+                "vite",
+                name,
+                "--template",
+                if (lang == "ts") "svelte-ts" else "svelte"
+            )
+
+            "lit" -> listOf(
+                "yes",
+                "|",
+                "bun",
+                "create",
+                "vite",
+                name,
+                "--template",
+                if (lang == "ts") "lit-ts" else "lit"
+            )
+
+
+            "solid" -> listOf(
+                "yes",
+                "|",
+                "bun",
+                "create",
+                "vite",
+                name,
+                "--template",
+                if (lang == "ts") "solid-ts" else "solid"
+            )
+
+
+            "qwik" -> listOf(
+                "yes",
+                "|",
+                "bun",
+                "create",
+                "vite",
+                name,
+                "--template",
+                if (lang == "ts") "qwik-ts" else "qwik"
+            )
+
+            "next" -> {
+                val appRouter = if (values["next_app_router"] == "no") "--no-app" else "--app"
+                val tailwind =
+                    if (values["next_tailwind"] == "no") "--no-tailwind" else "--tailwind"
+                listOf(
+                    "bun",
+                    "create",
+                    "next-app",
+                    name,
+                    "--ts",
+                    appRouter,
+                    tailwind,
+                    "--use-bun",
+                    "--no-src-dir",
+                    "--import-alias",
+                    "@/*"
+                )
+            }
+
             "custom" -> {
-                val raw = customCommand.orEmpty().trim()
+                val raw = values["command"].orEmpty().trim()
                 require(raw.isNotBlank()) { "Custom command cannot be empty" }
                 parseCommandString(raw, name)
             }
