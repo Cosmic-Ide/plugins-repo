@@ -184,6 +184,6 @@
     "detailedDescription": "## Android Support\n\nAndroid SDK management and build tools integration for Cosmic IDE.\n\n### Features\n\n- Android SDK status monitoring\n- Automated Android SDK and Build Tools installation\n\n### Setup\n\nRun **Install Android SDK** to download and install the Android Command Line Tools and Build Tools 37.0.0.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/android-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/android-support-1.0.0.zip",
-    "sha256": "a67628e284a6d9b43277ddc3595cdfcee0ab6fcd0e75aee4eb955affacdefec0"
+    "sha256": "844587300254b0a29db2def36f96b030c092734fc322839b53b25004de25c752"
   }
 ]
