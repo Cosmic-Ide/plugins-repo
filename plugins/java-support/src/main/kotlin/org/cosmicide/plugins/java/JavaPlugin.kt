@@ -190,7 +190,7 @@ private class JdtServerConnection(
 private fun findEquinoxLauncher(jdtlsDir: File): File? {
     return jdtlsDir.resolve("plugins").listFiles()?.firstOrNull {
         it.name.startsWith("org.eclipse.equinox.launcher_") && it.extension == "jar"
-        }
+    }
 }
 
 private const val JAVA_TEXTMATE_GRAMMAR =

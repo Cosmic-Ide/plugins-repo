@@ -73,8 +73,11 @@ cp -r /tmp/android-sdk-tools/cmdline-tools/* ~/Android/sdk/cmdline-tools/latest/
 rm -rf /tmp/android-sdk-tools /tmp/cmdline-tools.zip && \
 (grep -q "ANDROID_SDK" ~/.bash_profile || (echo 'export ANDROID_SDK=$HOME/Android/sdk' >> ~/.bash_profile && echo 'export ANDROID_SDK_ROOT=$HOME/Android/sdk' >> ~/.bash_profile && echo 'export PATH=$PATH:$ANDROID_SDK/cmdline-tools/latest/bin' >> ~/.bash_profile)) && \
 export ANDROID_SDK=$HOME/Android/sdk && \
-export ANDROID_SDK_ROOT=$HOME/Android/sdk && \
 export PATH=$PATH:$ANDROID_SDK/cmdline-tools/latest/bin && \
-yes | sdkmanager --sdk_root=$ANDROID_SDK "build-tools;37.0.0"
-echo 'android.aapt2FromMavenOverride=~/Android/sdk/build-tools/37.0.0/aapt2\n' >> ~/.gradle/gradle.properties
+yes 2>/dev/null | sdkmanager --sdk_root="$ANDROID_SDK" --licenses && \
+yes 2>/dev/null | sdkmanager --sdk_root="$ANDROID_SDK" "platform-tools" "build-tools;37.0.0" && \
+curl -fsSL https://raw.githubusercontent.com/Commit451/android-arm-build-tools/main/install.sh | bash && \
+mkdir -p ~/.gradle &&
+(sed -i '/^android\.aapt2FromMavenOverride=/d' ~/.gradle/gradle.properties 2>/dev/null || true) &&
+echo "android.aapt2FromMavenOverride=$HOME/Android/sdk/build-tools/37.0.0/aapt2" >> ~/.gradle/gradle.properties
 """.trimIndent()
