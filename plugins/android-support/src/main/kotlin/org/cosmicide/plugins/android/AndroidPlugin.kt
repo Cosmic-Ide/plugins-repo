@@ -338,9 +338,6 @@ echo "android.aapt2FromMavenOverride=$ANDROID_HOME/build-tools/37.0.0/aapt2" >> 
 
 
 
-6
-
-
 
 
 
