@@ -66,15 +66,14 @@ private class AndroidSettingsUiProvider(private val commands: CommandExecutionSe
     override fun Content() {
         val scope = rememberCoroutineScope()
         val sdkPath = remember {
-            System.getenv("ANDROID_SDK_ROOT") ?: System.getenv("ANDROID_SDK")
+            System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK")
             ?: File(System.getProperty("user.home"), "Android/sdk").absolutePath
         }
 
         val sdkDir = remember(sdkPath) { File(sdkPath) }
         val buildToolsRoot = remember(sdkDir) { File(sdkDir, "build-tools") }
         val ndkRoot = remember(sdkDir) {
-            val ndk = File(sdkDir, "ndk")
-            if (ndk.exists()) ndk else File(sdkDir, "ndk-bundle")
+            File(sdkDir, "ndk")
         }
 
         val installedBuildTools = remember(buildToolsRoot) {
