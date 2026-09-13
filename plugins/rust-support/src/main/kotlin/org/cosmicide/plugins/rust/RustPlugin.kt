@@ -317,6 +317,7 @@ private object RustProjectCommandProvider : ProjectCommandProvider {
     }
 }
 
-private const val RUST_INSTALL_COMMAND = "pacman -S --needed rust rust-analyzer gcc"
+private const val RUST_INSTALL_COMMAND =
+    "pacman -S --needed rustup && rustup default stable && rustup component add rust-analyzer"
 private const val RUST_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/rust/syntaxes/rust.tmLanguage.json"
