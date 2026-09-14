@@ -8,7 +8,7 @@
     "detailedDescription": "## JavaScript & TypeScript language support\n\nEdit modern JavaScript and TypeScript projects with fast, IDE-quality language intelligence powered by **typescript-language-server**.\n\n### Features\n\n- Intelligent code completion\n- Real-time diagnostics and error reporting\n- Go to Definition, Find References, and Rename Symbol\n- Signature Help, Hover, and Inlay Hints\n- JSX and TSX support\n- JavaScript, TypeScript, React, and modern ECMAScript support\n\n### Supported Languages\n\n- JavaScript (.js, .mjs, .cjs)\n- JSX (.jsx)\n- TypeScript (.ts, .mts, .cts)\n- TSX (.tsx)\n\n### Setup\n\nAfter installing the plugin, run **Install Web related packages** to install Node.js, TypeScript, and the TypeScript Language Server.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/web-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/web-support-1.0.0.zip",
-    "sha256": "7b2a1637424048018624338ef408b5c512973cefc87547ee1db5c608ea4aba40"
+    "sha256": "f7d95e276ed1b5b9f2fcbd95ac7e0173169f9533b59a81aeb24fb21540e447d8"
   },
   {
     "id": "org.cosmicide.plugins.rust",
@@ -19,7 +19,7 @@
     "detailedDescription": "## Rust development\n\nBuild and maintain Cargo projects with rust-analyzer code intelligence and integrated Cargo workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, and inline assistance from **rust-analyzer**\n- Automatic detection of projects containing `Cargo.toml`\n- Binary and library project templates\n- Cargo actions for fetching dependencies, checking, building, running, and testing\n\n### Setup\n\nAfter installation, run **Install Rust toolchain** once. Existing Cargo projects are recognized when you open their project directory.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/rust-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/rust-support-1.0.0.zip",
-    "sha256": "16c223c464f33b2410d96cfa70162141a78ac16d8e86cf0a3c2d26201868cc22"
+    "sha256": "2a8c5c853a7b22cff8fb90eccb424c4362689463b16e1c32e6e38f37fe790f65"
   },
   {
     "id": "org.cosmicide.plugins.java",
@@ -30,7 +30,7 @@
     "detailedDescription": "## Java development\n\nBuild and maintain Java projects with code intelligence powered by Eclipse JDT Language Server.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, code actions, and inline assistance from **Eclipse JDT LS**\n- Support for Java source files and common JVM project structures\n- Automatic integration with Gradle and Maven projects\n- Signature help, inlay hints, formatting, and import organization\n\n### Setup\n\nAfter installation, run **Install JDT LS** once. Java support becomes available when you open a project containing Java source files.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/java-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/java-support-1.0.0.zip",
-    "sha256": "7e9b53c4d537b46d3cdbcf31624cfd106b08b1933dc152c4bab8efb7b4d67a0c"
+    "sha256": "ec65c75c594b71bf42952c20e0694d0b451cca549ab71d4583130a7256359b81"
   },
   {
     "id": "org.cosmicide.plugins.gleam",
@@ -41,7 +41,7 @@
     "detailedDescription": "## Gleam development\n\nCreate and maintain Gleam applications and libraries with language intelligence and integrated Gleam tooling.\n\n### Features\n\n- Completion, diagnostics, navigation, and inline assistance from **gleam lsp**\n- Automatic detection of projects containing `gleam.toml`\n- Project templates for Erlang and JavaScript targets\n- Actions for checking, compiling, running, testing, formatting, and dependency updates\n- Organized workflows for documentation, exports, fixes, and package publishing\n\n### Setup\n\nAfter installation, run **Install Gleam** once. Existing Gleam projects are recognized when you open their project directory.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gleam-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/gleam-support-1.0.0.zip",
-    "sha256": "f6597e0f8a3dc8472d3f1bd3817e9b9efca3e4b6d5fcd90aaa98c141e9574ca1"
+    "sha256": "0e3c8e9593f78bb0f9b3b882f4d187442cd62ffed3e0ef4aac3d9c825437bf70"
   },
   {
     "id": "org.cosmicide.plugins.go",
@@ -52,7 +52,7 @@
     "detailedDescription": "## Go development\n\nWork with Go modules and workspaces using syntax highlighting, project templates, and integrated Go commands.\n\n### Features\n\n- TextMate syntax highlighting for `.go` files\n- Automatic detection of `go.mod` modules and `go.work` workspaces\n- Application and library project templates\n- Actions for building, running, testing, formatting, and vetting packages\n- Organized module, testing, and maintenance workflows\n\n### Setup\n\nAfter installation, run **Install Go** once. Existing modules and workspaces are recognized when you open their project directory.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/go-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/go-support-1.0.0.zip",
-    "sha256": "b870d52d9251700d0259db945de6b9e12345b62bfb2ac51b21f398a374bf1c0a"
+    "sha256": "4c87f2a45bd2dea17ff01ff7877f570deaaef14b8e2f9c2792153d0c0af6f513"
   },
   {
     "id": "org.cosmicide.plugins.gradle",
@@ -63,7 +63,7 @@
     "detailedDescription": "## Gradle development\n\nCreate and maintain Gradle builds with integrated lifecycle, dependency, and custom task workflows.\n\n### Features\n\n- Automatic detection of projects containing Gradle wrapper or build files\n- Java, Kotlin, Groovy, and Scala project templates\n- Toolbar run actions for detected entry points\n- Common build, test, and run commands\n- A searchable Gradle task picker with all available tasks\n- Support for both Gradle wrapper (./gradlew) and system Gradle\n\n### Setup\n\nAfter installation, run **Install Gradle** once. Gradle projects are recognized when you open a directory containing `gradlew`, `build.gradle`, or `build.gradle.kts`. Uses Cosmic IDE's selected JDK.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gradle-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/gradle-support-1.0.0.zip",
-    "sha256": "37c1c2f050bbe717351399670466794cad9873c016516f1a8ba89fccb3fe1877"
+    "sha256": "707103e1e993cd1d31844d36d618786328b765c273632f3f7d990c68ba3b4e13"
   },
   {
     "id": "org.cosmicide.plugins.lua",
@@ -74,7 +74,7 @@
     "detailedDescription": "## Lua development\n\nDevelop Lua applications and modules with LuaLS intelligence and a practical set of quality tools.\n\n### Features\n\n- Completion, diagnostics, navigation, annotations, and formatting from **LuaLS**\n- TextMate syntax highlighting for `.lua` files\n- Application and module project templates with LuaLS and StyLua configuration\n- Actions for running code, opening a REPL, checking syntax, formatting, and linting\n- LuaRocks dependency inspection\n\n### Setup\n\nAfter installation, run **Install Lua tools** once. Projects with Lua source files or `.luarc.json` configuration are recognized automatically.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/lua-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/lua-support-1.0.0.zip",
-    "sha256": "227ad219d28c87e85cd00f7893a183481a5a85a02507bb867b88dfceaabd1420"
+    "sha256": "06db588e4ba3cf4a5216ab93ca60ca289c06975f74aecffaa7dc7c3ccdb6dc95"
   },
   {
     "id": "org.cosmicide.plugins.python",
@@ -85,7 +85,7 @@
     "detailedDescription": "## Python development\n\nBuild Python applications and packages with language intelligence, isolated environments, and focused development workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, hover information, and formatting from **python-lsp-server**\n- TextMate syntax highlighting for `.py` and `.pyi` files\n- Application and installable-package templates with an automatically created project-local `.venv`\n- Context-aware actions for running applications, testing with pytest, formatting and linting with Ruff, and building distributions\n- Dependency installation into the project virtual environment when requirements or package metadata are present\n\n### Setup\n\nAfter installation, run **Install Python tools** once. Existing Python projects are detected from common project files or Python source files.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/python-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/python-support-1.0.0.zip",
-    "sha256": "bc6d63e821c8b26d1abc562fec619067752f6b4960095f81dfb6a106c4e143d8"
+    "sha256": "30112b68af1b9ac59f609e31cbb1c91813e1eed83bfeb8f5ff80710ba13e82ef"
   },
   {
     "id": "org.cosmicide.plugins.clangd",
@@ -96,7 +96,7 @@
     "detailedDescription": "## Clangd language support\n\nEdit C-family projects with fast, compiler-aware language intelligence from **clangd**.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, signature help, and inlay hints\n- C, C++, Objective-C, Objective-C++, and CUDA source and header support\n- Background indexing and clang-tidy diagnostics\n- Automatic use of `compile_commands.json` supplied by CMake and other build systems\n\n### Setup\n\nAfter installation, run **Install Clang tools** once. For the most accurate results, configure your build to generate a `compile_commands.json` file.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/clangd-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/clangd-support-1.0.0.zip",
-    "sha256": "4544572a06e41f4e83300ec2e4ceeea5e0bb5a586013f837f266716ea92e6ee5"
+    "sha256": "7751c7e4e3b1b97361f460a2bb80a3c33ea0f36c4d7b4a190952eb95ce07cf2e"
   },
   {
     "id": "org.cosmicide.plugins.cmake",
@@ -107,7 +107,7 @@
     "detailedDescription": "## CMake development\n\nCreate, build, and run C or C++ projects with integrated CMake and Make workflows.\n\n### Features\n\n- Automatic detection of projects containing `CMakeLists.txt`\n- C and C++ executable or library starter projects\n- Debug and release configuration with exported `compile_commands.json`\n- Toolbar build-and-run actions for declared executable targets\n- Commands for configuring, building, testing, installing, and cleaning projects\n- Generated Makefiles through CMake's Unix Makefiles generator\n\n### Setup\n\nAfter installation, run **Install CMake tools** once. Install Clangd Support separately for C-family code intelligence.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/cmake-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/cmake-support-1.0.0.zip",
-    "sha256": "0a90400b195bb77e0c327d9450aa6bec5eb34913ad607bddd2b9b6480529af97"
+    "sha256": "b9dd38f9d3214be4aa0fd56cee41a636898616338a381c0918884de8eac2d3cc"
   },
   {
     "id": "org.cosmicide.plugins.maven",
@@ -118,7 +118,7 @@
     "detailedDescription": "## Maven development\n\nCreate and maintain Maven builds with integrated lifecycle, dependency, plugin, and application workflows.\n\n### Features\n\n- Automatic detection of projects containing `pom.xml`\n- Apache Maven archetypes for Java quickstart, simple JAR, and web application projects\n- A curated multi-module application template\n- Toolbar run actions for detected Java entry points\n- Common resolve, build, test, and run commands\n- A searchable Maven task picker with lifecycle, dependency, documentation, detected plugin, and configured execution goals\n- An interactive **Custom goals…** task for arbitrary Maven goal combinations\n\n### Setup\n\nAfter installation, run **Install Maven** once. Maven uses Cosmic IDE's selected JDK and downloads archetypes and project dependencies through the repositories configured by the project and Maven settings.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/maven-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/maven-support-1.0.0.zip",
-    "sha256": "b506c9c5b2e9beaad52e936b40c060d3f004e546cfc95027b2e73a515726dad9"
+    "sha256": "40321a159651242991a8212ea27351a3bce55cd7d7c8e1323c86eeb95e495876"
   },
   {
     "id": "org.cosmicide.plugins.scala",
@@ -129,7 +129,7 @@
     "detailedDescription": "## Scala development\n\nDevelop Scala projects with Metals code intelligence and integrated build-system workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, signature help, and inlay hints from **Metals**\n- Scala 2 and Scala 3 syntax highlighting for `.scala`, `.sc`, `.sbt`, and `.mill` files\n- Automatic detection of sbt, Mill, Gradle, Maven, Scala CLI, and standard Scala source layouts\n- Scala 3 sbt application and library project templates\n- Build, run, test, dependency, console, and cleanup commands\n- Searchable tasks adapted to the detected Scala build tool\n\n### Setup\n\nAfter installation, run **Install Scala tools** once. This installs Metals, sbt, and Scala CLI with Coursier into Cosmic IDE's private toolchain.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/scala-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/scala-support-1.0.0.zip",
-    "sha256": "753252514848a574ca7a61f36010a9fcd9e37a530d9665e808e8c57335434deb"
+    "sha256": "22e323c33d9d50a39c4dd21bd593fe9e951ba8aa564d0c80c7cd38b49c613d1b"
   },
   {
     "id": "org.cosmicide.plugins.md",
@@ -140,7 +140,7 @@
     "detailedDescription": "## Markdown language support\n\nEdit Markdown documents with real-time diagnostics, document symbols, workspace link validation, and smart auto-completion powered by **markdown-oxide**.\n\n### Features\n\n- Header and link completion\n- Workspace link checking\n- TextMate syntax highlighting\n- Document structure outlines",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/md-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/md-support-1.0.0.zip",
-    "sha256": "d9a4e922ee45ae76d3c6b88fbcc7ea299bd025ba699e9b81a89d088367618f0f"
+    "sha256": "2540aadbe0ae732830add847b898a26a17e60e3e13cb5265f80df2c464ef648d"
   },
   {
     "id": "org.cosmicide.plugins.json",
@@ -151,7 +151,7 @@
     "detailedDescription": "## JSON language support\n\nEdit JSON and JSONC configuration files with real-time validation, auto-completion, schema validation, and formatting powered by **vscode-json-languageserver**.\n\n### Features\n\n- Auto-completion for properties and values\n- Syntax validation and error diagnostics\n- Document formatting and folding ranges\n- Support for standard JSON, JSONC (with comments), and JSON5",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/json-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/json-support-1.0.0.zip",
-    "sha256": "effc6f254e3aae079b9454a33a926394d486cc9853ae2f6529e750ab43475798"
+    "sha256": "1773d549c671a5f13559a319a1339f2205151ac5cdae01035d435bcf7726719d"
   },
   {
     "id": "org.cosmicide.plugins.bun",
@@ -162,7 +162,7 @@
     "detailedDescription": "## Bun Project Support\n\nProject lifecycle management using **Bun** for ultra-fast package management, scaffolding, and script execution.\n\n### Features\n\n- Bun project recognition (`package.json`, `bun.lock`, `bun.lockb`, `tsconfig.json`, `jsconfig.json`)\n- Project scaffolding via `bun create` (Vite, Next.js, React, Vue, Svelte, or custom commands)\n- Integrated Bun commands (`bun install`, `bun dev`, `bun run build`, `bun start`, `bun test`)\n\n### Setup\n\nRun **Install Bun** to install the runtime via the official install script and upgrade to canary.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/bun-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/bun-support-1.0.0.zip",
-    "sha256": "d87a3a7a8084a718ef66e6d7982109f47991192aacb0aaf5d1a4f664222609e5"
+    "sha256": "fb1459ec8a02e1695fa6d825cf1ad2a7d95bb699c6d5730795b84e44cdc5e48a"
   },
   {
     "id": "org.cosmicide.plugins.vue",
@@ -173,7 +173,7 @@
     "detailedDescription": "## Vue Language Support\n\nEdit `.vue` Single File Components (SFC) with fast language intelligence powered by **vue-language-server**.\n\n### Features\n\n- Intelligent template and script code completion\n- Real-time diagnostics and syntax validation\n- Go to Definition, References, and Hover help\n- Signature Help and Inlay Hints\n\n### Supported Files\n\n- Vue Single File Components (`.vue`)\n\n### Setup\n\nRun **Install Vue Language Server** to install `vue-language-server` via pacman.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/vue-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/vue-support-1.0.0.zip",
-    "sha256": "2ba090310d666e190a5170e7b61be75bc9abff75a2e60f89f4a04f7fb99f1c9d"
+    "sha256": "2ad421b0f68f6ad32d9bbb116bf2bc3272d45513083097b7ece3fb23090c06e3"
   },
   {
     "id": "org.cosmicide.plugins.android",
@@ -184,6 +184,6 @@
     "detailedDescription": "## Android Support\n\nAndroid SDK management and build tools integration for Cosmic IDE.\n\n### Features\n\n- Android SDK status monitoring\n- Automated Android SDK and Build Tools installation\n\n### Setup\n\nRun **Install Android SDK** to download and install the Android Command Line Tools and Build Tools 37.0.0.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/android-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/android-support-1.0.0.zip",
-    "sha256": "8764782064d46c55743d65c4f221751dad15f58029766524dd2b6b556a3a18df"
+    "sha256": "833f6513a3b14dda8d9018aa2d45d109fc066336f913b8377381dffe94e6c657"
   }
 ]

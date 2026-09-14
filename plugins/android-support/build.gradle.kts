@@ -7,7 +7,7 @@ android {
     namespace = "org.cosmicide.plugins.android"
     compileSdk {
         version = release(37) {
-            minorApiLevel = 1
+            minorApiLevel = 2
         }
     }
 
@@ -55,6 +55,8 @@ android {
 dependencies {
     compileOnly(projects.ideApi)
     compileOnly(kotlin("stdlib"))
+    compileOnly("androidx.activity:activity-compose:1.13.0")
+    compileOnly("androidx.compose.material:material-icons-core:1.7.8")
 }
 
 configurations.named("implementation") {

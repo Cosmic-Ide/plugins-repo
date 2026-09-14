@@ -6,7 +6,7 @@ android {
     namespace = "org.cosmicide.plugins.go"
     compileSdk {
         version = release(37) {
-            minorApiLevel = 1
+            minorApiLevel = 2
         }
     }
 

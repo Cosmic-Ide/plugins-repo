@@ -6,7 +6,7 @@ android {
     namespace = "org.cosmicide.plugins.maven"
     compileSdk {
         version = release(37) {
-            minorApiLevel = 1
+            minorApiLevel = 2
         }
     }
 
@@ -50,8 +50,6 @@ android {
 dependencies {
     compileOnly(projects.ideApi)
     compileOnly(kotlin("stdlib"))
-    testImplementation(projects.ideApi)
-    testImplementation(kotlin("stdlib"))
     testImplementation("junit:junit:4.13.2")
 }
 

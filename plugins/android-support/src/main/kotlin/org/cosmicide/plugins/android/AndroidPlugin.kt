@@ -1,22 +1,33 @@
 package org.cosmicide.plugins.android
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.cosmicide.plugin.api.CosmicPlugin
@@ -62,12 +73,23 @@ private class AndroidSettingsUiProvider(private val commands: CommandExecutionSe
         "30" to "https://github.com/HomuHomu833/android-ndk-custom/releases/download/r30/android-ndk-r30-beta2-aarch64-linux-gnu.tar.xz"
     )
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
+        val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+        val context = LocalContext.current
         val scope = rememberCoroutineScope()
-        val sdkPath = remember {
-            System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK")
-            ?: File(System.getProperty("user.home"), "Android/sdk").absolutePath
+        val sdkPath = remember(context) {
+            val candidates = listOfNotNull(
+                File(context.filesDir, "arch/home/Android/sdk").absolutePath,
+                File(System.getProperty("user.home"), "Android/sdk").absolutePath,
+                File(
+                    android.os.Environment.getExternalStorageDirectory(),
+                    "Android/sdk"
+                ).absolutePath
+            )
+            candidates.firstOrNull { File(it).exists() }
+                ?: candidates.first()
         }
 
         val sdkDir = remember(sdkPath) { File(sdkPath) }
@@ -86,71 +108,94 @@ private class AndroidSettingsUiProvider(private val commands: CommandExecutionSe
                 ?: emptyList()
         }
 
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Android SDK Status",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            Text(text = "SDK Path", style = MaterialTheme.typography.labelLarge)
-            Text(
-                text = sdkPath,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            SectionTitle("Build Tools")
-            if (installedBuildTools.isEmpty()) {
-                Text(
-                    text = "No Build Tools installed",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(vertical = 8.dp)
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(label) },
+                    navigationIcon = {
+                        IconButton(onClick = { backDispatcher?.onBackPressed() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                 )
-            } else {
-                installedBuildTools.forEach { version ->
-                    VersionItem(
-                        version = version,
-                        isSupported = isBuildToolSupported(version),
-                        isPatched = isPatched(File(buildToolsRoot, version))
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SectionTitle("NDK")
-            if (installedNdk.isEmpty()) {
+            },
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
                 Text(
-                    text = "No NDK installed",
+                    text = "Android SDK Status",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Text(text = "SDK Path", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    text = sdkPath,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
-            } else {
-                installedNdk.forEach { version ->
-                    VersionItem(
-                        version = version,
-                        isSupported = isNdkSupported(version),
-                        isPatched = isPatched(File(ndkRoot, version))
+
+                SectionTitle("Build Tools")
+                if (installedBuildTools.isEmpty()) {
+                    Text(
+                        text = "No Build Tools installed",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(vertical = 8.dp)
                     )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = {
-                    scope.launch {
-                        patchAll(sdkPath)
+                } else {
+                    installedBuildTools.forEach { version ->
+                        VersionItem(
+                            version = version,
+                            isSupported = isBuildToolSupported(version),
+                            isPatched = isPatched(File(buildToolsRoot, version))
+                        )
                     }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Patch Unpatched Tools")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SectionTitle("NDK")
+                if (installedNdk.isEmpty()) {
+                    Text(
+                        text = "No NDK installed",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                } else {
+                    installedNdk.forEach { version ->
+                        VersionItem(
+                            version = version,
+                            isSupported = isNdkSupported(version),
+                            isPatched = isPatched(File(ndkRoot, version))
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        scope.launch {
+                            patchAll(sdkPath)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Patch Unpatched Tools")
+                }
             }
         }
     }
