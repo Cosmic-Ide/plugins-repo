@@ -70,8 +70,7 @@ The plugin build compiles against the sibling Cosmic IDE checkout without packag
 classes into the plugin APK:
 
 ```sh
-./gradlew :plugins:rust-support:packageProdReleasePlugin \
-  -PcosmicIdeDir=/path/to/Cosmic-IDE
+./gradlew :plugins:rust-support:packageProdReleasePlugin
 ```
 
 The installable ZIP is written below `artifacts/`. Update its SHA-256 in `plugins.json` whenever

@@ -19,11 +19,6 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../Cosmic-IDE/common" />
-            <option value="$PROJECT_DIR$/../Cosmic-IDE/feature" />
-            <option value="$PROJECT_DIR$/../Cosmic-IDE/feature/project" />
-            <option value="$PROJECT_DIR$/../Cosmic-IDE/ide-api" />
-            <option value="$PROJECT_DIR$/../Cosmic-IDE/plugin-api" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/plugins" />

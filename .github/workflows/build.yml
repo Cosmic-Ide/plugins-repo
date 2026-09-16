@@ -10,10 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: Cosmic-Ide/Cosmic-IDE
-          path: Cosmic-IDE
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -23,7 +19,7 @@ jobs:
         run: sdkmanager "platforms;android-37.1" "build-tools;37.0.0"
       - uses: gradle/actions/setup-gradle@v4
       - name: Build plugin bundles
-        run: ./gradlew packageProdReleasePlugin -PcosmicIdeDir="$GITHUB_WORKSPACE/Cosmic-IDE"
+        run: ./gradlew packageProdReleasePlugin
       - name: Verify committed checksums are current
         run: git diff --exit-code -- plugins.json
       - name: Verify plugin bundles

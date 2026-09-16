@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    compileOnly(projects.ideApi)
+    compileOnly("org.invokevirtual.cosmicide:ide-api:3.0.0")
     compileOnly(kotlin("stdlib"))
 }
 
