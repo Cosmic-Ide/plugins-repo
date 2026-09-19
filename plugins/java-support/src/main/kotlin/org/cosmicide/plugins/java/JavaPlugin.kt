@@ -9,6 +9,8 @@ import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.plugins.AndroidPluginServices
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -17,7 +19,9 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-class JavaPlugin : CosmicPlugin {
+class JavaPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.java"
+) {
 
     private lateinit var pluginDir: String
 
@@ -36,12 +40,12 @@ class JavaPlugin : CosmicPlugin {
 
         pluginDir = context.services.require(AndroidPluginServices.PLUGIN_DIRECTORY).absolutePath
 
-        context.registerDisposable(
-            context.extensions.register(
-                point = EditorExtensionPoints.LSP_SERVER_PROVIDER, extension = JavaServerProvider(
-                    processService, context, context.logger
-                ), ownerPluginId = context.descriptor.id, priority = 350
-            )
+        context.register(
+            point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
+            extension = JavaServerProvider(
+                processService, context, context.logger
+            ),
+            priority = 350
         )
 
         context.logger.info("Java language support registered")

@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    compileOnly("org.invokevirtual.cosmicide:ide-api:3.0.0")
+    compileOnly("org.invokevirtual.cosmicide:ide-api:3.0.1-SNAPSHOT")
     compileOnly(kotlin("stdlib"))
     compileOnly("androidx.activity:activity-compose:1.13.0")
     compileOnly("androidx.compose.material:material-icons-core:1.7.8")

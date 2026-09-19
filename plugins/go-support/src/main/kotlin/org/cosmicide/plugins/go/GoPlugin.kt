@@ -1,15 +1,17 @@
 package org.cosmicide.plugins.go
 
-import org.cosmicide.editor.EditorExtensionPoints
-import org.cosmicide.editor.EditorLanguageProvider
-import org.cosmicide.editor.EditorLanguageRequest
 import io.github.rosemoe.sora.langs.textmate.TextMateLanguage
 import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry
 import io.github.rosemoe.sora.langs.textmate.registry.ThemeRegistry
 import io.github.rosemoe.sora.langs.textmate.registry.model.DefaultGrammarDefinition
+import org.cosmicide.editor.EditorExtensionPoints
+import org.cosmicide.editor.EditorLanguageProvider
+import org.cosmicide.editor.EditorLanguageRequest
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -33,8 +35,9 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.URL
 
-class GoPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class GoPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.go",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.go.installToolchain",
             label = "Install Go",
@@ -42,37 +45,30 @@ class GoPlugin : CosmicPlugin {
             description = "Install the Go compiler and toolchain."
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
-        val owner = context.descriptor.id
 
-        listOf(
-            context.extensions.register(
-                point = EditorExtensionPoints.LANGUAGE_PROVIDER,
-                extension = GoTextMateLanguageProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = GoProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = GoProjectCreationProvider(commandService),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = GoProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = EditorExtensionPoints.LANGUAGE_PROVIDER,
+            extension = GoTextMateLanguageProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = GoProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = GoProjectCreationProvider(commandService),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = GoProjectCommandProvider,
+            priority = 350
+        )
 
         context.logger.info("Go syntax, module, and workspace support registered")
     }

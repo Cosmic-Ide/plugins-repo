@@ -9,6 +9,8 @@ import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
 import org.cosmicide.project.OperationReporter
@@ -32,8 +34,9 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-class ScalaPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class ScalaPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.scala",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.scala.installTools",
             label = "Install Scala tools",
@@ -41,43 +44,35 @@ class ScalaPlugin : CosmicPlugin {
             description = "Install Metals, sbt, and Scala CLI with Coursier."
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
         val processes = context.services.require(IdeServices.TOOL_PROCESS)
-        val owner = context.descriptor.id
 
-        listOf(
-            context.extensions.register(
-                point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
-                extension = MetalsServerProvider(processes, context.logger),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = ScalaProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = ScalaProjectCreationProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = ScalaProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TASK_PROVIDER,
-                extension = ScalaProjectTaskProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
+            extension = MetalsServerProvider(processes, context.logger),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = ScalaProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = ScalaProjectCreationProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = ScalaProjectCommandProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TASK_PROVIDER,
+            extension = ScalaProjectTaskProvider,
+            priority = 350
+        )
 
         context.logger.info("Scala language, project, and Metals support registered")
     }

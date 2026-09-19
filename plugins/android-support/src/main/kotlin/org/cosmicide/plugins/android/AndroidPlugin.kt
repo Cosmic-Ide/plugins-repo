@@ -60,6 +60,8 @@ import kotlinx.coroutines.withContext
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -68,8 +70,9 @@ import org.cosmicide.ui.UiExtensionPoints
 import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
 
-class AndroidPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class AndroidPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.android",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.android.installSdk",
             label = "Install Android SDK",
@@ -77,14 +80,13 @@ class AndroidPlugin : CosmicPlugin {
             description = "Download and install Android Command Line Tools and Build Tools 37.0.0"
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
-        context.extensions.register(
+        context.register(
             point = UiExtensionPoints.SETTINGS_UI,
-            extension = AndroidSettingsUiProvider(commandService),
-            ownerPluginId = context.descriptor.id
-        ).let(context::registerDisposable)
+            extension = AndroidSettingsUiProvider(commandService)
+        )
     }
 }
 

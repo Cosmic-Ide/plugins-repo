@@ -3,6 +3,8 @@ package org.cosmicide.plugins.maven
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -25,8 +27,9 @@ import org.cosmicide.project.ProjectTaskProvider
 import org.cosmicide.project.ProjectTypeProvider
 import java.io.File
 
-class MavenPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class MavenPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.maven",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.maven.installMaven",
             label = "Install Maven",
@@ -34,44 +37,37 @@ class MavenPlugin : CosmicPlugin {
             description = "Install Apache Maven."
         )
     )
-
+) {
     // Store reference to task provider for cache management
     private var taskProvider: MavenProjectTaskProvider? = null
 
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
-        val owner = context.descriptor.id
 
         // Create task provider instance using singleton
         val mavenTaskProvider = MavenProjectTaskProvider.getInstance()
         taskProvider = mavenTaskProvider
 
-        listOf(
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = MavenProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = MavenProjectCreationProvider(commandService),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = MavenProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TASK_PROVIDER,
-                extension = mavenTaskProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = MavenProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = MavenProjectCreationProvider(commandService),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = MavenProjectCommandProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TASK_PROVIDER,
+            extension = mavenTaskProvider,
+            priority = 350
+        )
 
         context.logger.info("Maven project support registered")
     }

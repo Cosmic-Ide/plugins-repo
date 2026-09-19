@@ -9,6 +9,8 @@ import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -32,8 +34,9 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-class GleamPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class GleamPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.gleam",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.gleam.installToolchain",
             label = "Install Gleam",
@@ -41,38 +44,31 @@ class GleamPlugin : CosmicPlugin {
             description = "Install the Gleam compiler and language server."
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
         val processService = context.services.require(IdeServices.TOOL_PROCESS)
-        val owner = context.descriptor.id
 
-        listOf(
-            context.extensions.register(
-                point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
-                extension = GleamAnalyzerProvider(processService, context.logger),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = GleamProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = GleamProjectCreationProvider(commandService),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = GleamProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
+            extension = GleamAnalyzerProvider(processService, context.logger),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = GleamProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = GleamProjectCreationProvider(commandService),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = GleamProjectCommandProvider,
+            priority = 350
+        )
 
         context.logger.info("Gleam language and gleam project support registered")
     }

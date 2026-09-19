@@ -9,6 +9,8 @@ import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -32,8 +34,9 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-class RustPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class RustPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.rust",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.rust.installToolchain",
             label = "Install Rust toolchain",
@@ -41,38 +44,31 @@ class RustPlugin : CosmicPlugin {
             description = "Install Rust, Cargo, GCC, and rust-analyzer."
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
         val processService = context.services.require(IdeServices.TOOL_PROCESS)
-        val owner = context.descriptor.id
 
-        listOf(
-            context.extensions.register(
-                point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
-                extension = RustAnalyzerProvider(processService, context.logger),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = RustProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = RustProjectCreationProvider(commandService),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = RustProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
+            extension = RustAnalyzerProvider(processService, context.logger),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = RustProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = RustProjectCreationProvider(commandService),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = RustProjectCommandProvider,
+            priority = 350
+        )
 
         context.logger.info("Rust language and Cargo project support registered")
     }

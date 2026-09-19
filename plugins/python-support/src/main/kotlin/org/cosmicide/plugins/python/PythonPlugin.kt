@@ -9,6 +9,8 @@ import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -32,8 +34,9 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-class PythonPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class PythonPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.python",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.python.installToolchain",
             label = "Install Python tools",
@@ -41,38 +44,26 @@ class PythonPlugin : CosmicPlugin {
             description = "Install Python, python-lsp-server, Ruff, pytest, pip, and build."
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
         val processService = context.services.require(IdeServices.TOOL_PROCESS)
-        val owner = context.descriptor.id
 
-        listOf(
-            context.extensions.register(
-                point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
-                extension = PythonLanguageServerProvider(processService, context.logger),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = PythonProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = PythonProjectCreationProvider(commandService),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = PythonProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
+            extension = PythonLanguageServerProvider(processService, context.logger),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = PythonProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = PythonProjectCreationProvider(commandService),
+            priority = 350
+        )
 
         context.logger.info("Python language, project, and pylsp support registered")
     }

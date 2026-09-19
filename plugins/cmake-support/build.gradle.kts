@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    compileOnly("org.invokevirtual.cosmicide:ide-api:3.0.0")
+    compileOnly("org.invokevirtual.cosmicide:ide-api:3.0.1-SNAPSHOT")
     compileOnly(kotlin("stdlib"))
     testImplementation("junit:junit:4.13.2")
 }

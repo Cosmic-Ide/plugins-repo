@@ -9,6 +9,8 @@ import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
 import org.cosmicide.project.OperationReporter
@@ -30,8 +32,9 @@ import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 
-class LuaPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class LuaPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.lua",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.lua.installToolchain",
             label = "Install Lua tools",
@@ -39,37 +42,30 @@ class LuaPlugin : CosmicPlugin {
             description = "Install Lua, LuaLS, StyLua, LuaRocks, and Luacheck."
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
         val processService = context.services.require(IdeServices.TOOL_PROCESS)
-        val owner = context.descriptor.id
 
-        listOf(
-            context.extensions.register(
-                point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
-                extension = LuaLanguageServerProvider(processService, context.logger),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = LuaProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = LuaProjectCreationProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = LuaProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
+            extension = LuaLanguageServerProvider(processService, context.logger),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = LuaProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = LuaProjectCreationProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = LuaProjectCommandProvider,
+            priority = 350
+        )
 
         context.logger.info("Lua language, project, and LuaLS support registered")
     }

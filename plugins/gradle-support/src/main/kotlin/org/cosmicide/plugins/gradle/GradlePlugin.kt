@@ -3,6 +3,8 @@ package org.cosmicide.plugins.gradle
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
@@ -26,8 +28,9 @@ import org.cosmicide.project.ProjectTypeProvider
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
-class GradlePlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class GradlePlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.gradle",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.gradle.installGradle",
             label = "Install Gradle",
@@ -35,41 +38,34 @@ class GradlePlugin : CosmicPlugin {
             description = "Install Gradle build tool."
         )
     )
-
+) {
     private var taskProvider: GradleProjectTaskProvider? = null
 
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
-        val owner = context.descriptor.id
         val gradleTaskProvider = GradleProjectTaskProvider(commandService)
         taskProvider = gradleTaskProvider
 
-        listOf(
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = GradleProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = GradleProjectCreationProvider(commandService),
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = GradleProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.TASK_PROVIDER,
-                extension = gradleTaskProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = GradleProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = GradleProjectCreationProvider(commandService),
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = GradleProjectCommandProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.TASK_PROVIDER,
+            extension = gradleTaskProvider,
+            priority = 350
+        )
 
         context.logger.info("Gradle project support registered")
     }

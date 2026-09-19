@@ -3,6 +3,8 @@ package org.cosmicide.plugins.bun
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.CommandResult
@@ -24,8 +26,9 @@ import org.cosmicide.project.ProjectExtensionPoints
 import org.cosmicide.project.ProjectTypeProvider
 import java.io.File
 
-class BunPlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class BunPlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.bun",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.bun.installToolchain",
             label = "Install Bun",
@@ -33,29 +36,25 @@ class BunPlugin : CosmicPlugin {
             description = "Install the Bun runtime via official script and upgrade to canary."
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
-        val owner = context.descriptor.id
 
-        listOf(
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = BunProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 360
-            ), context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = BunProjectCreationProvider(commandService),
-                ownerPluginId = owner,
-                priority = 360
-            ), context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = BunProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 360
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = BunProjectTypeProvider,
+            priority = 360
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = BunProjectCreationProvider(commandService),
+            priority = 360
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = BunProjectCommandProvider,
+            priority = 360
+        )
 
         context.logger.info("Bun project creation and command support registered")
     }

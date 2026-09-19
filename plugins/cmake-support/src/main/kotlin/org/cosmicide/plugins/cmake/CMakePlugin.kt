@@ -3,6 +3,8 @@ package org.cosmicide.plugins.cmake
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
 import org.cosmicide.plugin.api.PluginSetupAction
+import org.cosmicide.plugin.api.plugin
+import org.cosmicide.plugin.api.register
 import org.cosmicide.project.OperationReporter
 import org.cosmicide.project.OperationUpdate
 import org.cosmicide.project.PluginFormField
@@ -19,8 +21,9 @@ import org.cosmicide.project.ProjectExtensionPoints
 import org.cosmicide.project.ProjectTypeProvider
 import java.io.File
 
-class CMakePlugin : CosmicPlugin {
-    override val setupActions = listOf(
+class CMakePlugin : CosmicPlugin by plugin(
+    id = "org.cosmicide.plugins.cmake",
+    setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.cmake.installTools",
             label = "Install CMake tools",
@@ -28,30 +31,23 @@ class CMakePlugin : CosmicPlugin {
             description = "Install CMake and Make."
         )
     )
-
+) {
     override fun activate(context: PluginContext) {
-        val owner = context.descriptor.id
-
-        listOf(
-            context.extensions.register(
-                point = ProjectExtensionPoints.TYPE_PROVIDER,
-                extension = CMakeProjectTypeProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.CREATION_PROVIDER,
-                extension = CMakeProjectCreationProvider,
-                ownerPluginId = owner,
-                priority = 350
-            ),
-            context.extensions.register(
-                point = ProjectExtensionPoints.COMMAND_PROVIDER,
-                extension = CMakeProjectCommandProvider,
-                ownerPluginId = owner,
-                priority = 350
-            )
-        ).forEach(context::registerDisposable)
+        context.register(
+            point = ProjectExtensionPoints.TYPE_PROVIDER,
+            extension = CMakeProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = CMakeProjectCreationProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.COMMAND_PROVIDER,
+            extension = CMakeProjectCommandProvider,
+            priority = 350
+        )
 
         context.logger.info("CMake project support registered")
     }
