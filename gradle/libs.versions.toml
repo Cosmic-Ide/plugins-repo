@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.4.20"
-agp = "9.4.0"
+agp = "9.4.1"
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

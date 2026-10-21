@@ -231,17 +231,10 @@ private object SwiftProjectCommandProvider : ProjectCommandProvider {
 }
 
 private const val SWIFT_INSTALL_COMMAND =
-    "pacman -S --needed --noconfirm libxml2-legacy && " +
-            "([ -f /usr/lib/libncursesw.so.6 ] && [ ! -e /usr/lib/libncurses.so.6 ] && ln -sf libncursesw.so.6 /usr/lib/libncurses.so.6 || true) && " +
-            "if ! command -v swiftly &>/dev/null && [ ! -x \"\${SWIFTLY_HOME_DIR:-\$HOME/.local/share/swiftly}/bin/swiftly\" ]; then " +
-            "curl -fsSL -O https://download.swift.org/swiftly/linux/swiftly-\$(uname -m).tar.gz && " +
-            "tar zxf swiftly-\$(uname -m).tar.gz && " +
-            "./swiftly init --quiet-shell-followup && " +
-            "rm -f swiftly-\$(uname -m).tar.gz swiftly; " +
-            "fi && " +
-            "[ -f \"\${SWIFTLY_HOME_DIR:-\$HOME/.local/share/swiftly}/env.sh\" ] && . \"\${SWIFTLY_HOME_DIR:-\$HOME/.local/share/swiftly}/env.sh\" && " +
-            "(grep -Fq 'swiftly/env.sh' \"\$HOME/.bashrc\" 2>/dev/null || echo '[ -f \"\${SWIFTLY_HOME_DIR:-\$HOME/.local/share/swiftly}/env.sh\" ] && . \"\${SWIFTLY_HOME_DIR:-\$HOME/.local/share/swiftly}/env.sh\"' >> \"\$HOME/.bashrc\") && " +
-            "swiftly install latest"
+    "pacman -S --needed --noconfirm libxml2-legacy curl && " +
+            "curl -sL https://download.swift.org/swiftly/linux/swiftly-\$(uname -m).tar.gz | tar -xzf - -C /usr/bin swiftly && " +
+            "swiftly init -y && " +
+            "swiftly install latest -y"
 
 private const val SWIFT_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/swift/syntaxes/swift.tmLanguage.json"
