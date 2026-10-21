@@ -233,8 +233,8 @@ private object SwiftProjectCommandProvider : ProjectCommandProvider {
 private const val SWIFT_INSTALL_COMMAND =
     "pacman -S --needed --noconfirm libxml2-legacy curl && " +
             "curl -sL https://download.swift.org/swiftly/linux/swiftly-\$(uname -m).tar.gz | tar -xzf - -C /usr/bin swiftly && " +
-            "swiftly init -y && " +
-            "swiftly install latest -y"
+            "swiftly init --platform ubuntu26.04 --skip-install -y && " +
+            "swiftly install latest --no-verify -y"
 
 private const val SWIFT_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/swift/syntaxes/swift.tmLanguage.json"
