@@ -26,23 +26,26 @@ in the repository index and the plugin's bundled `plugin.json` metadata.
 - **Scala Support** — Metals code intelligence, sbt application and library templates, build
   commands, and searchable tasks across common Scala build tools
   lifecycle, dependency, plugin-goal, and run commands.
+- **Swift Support** — sourcekit-lsp code intelligence, Package.swift project creation/detection,
+  swiftly toolchain management, and Swift Package Manager build, run, and test workflows.
 
 ## Language Support
 
 The Cosmic IDE plugins provide support for the following languages:
 
-| Language | LSP/Intelligence | Project System | Build Tools |
-|----------|------------------|----------------|-------------|
-| **C/C++/Objective-C/CUDA** | clangd | CMake | CMake, Make |
-| **Gleam** | gleam lsp | gleam.toml | Gleam |
-| **Go** | gopls (built-in) | go.mod | Go |
-| **Groovy** | (via Java LSP) | build.gradle | Gradle |
-| **Java** | (various) | build.gradle, pom.xml | Gradle, Maven |
-| **Kotlin** | (via Java LSP) | build.gradle | Gradle |
-| **Lua** | LuaLS | .luarc.json | Lua, LuaRocks |
-| **Python** | python-lsp-server | pyproject.toml, setup.py | pytest, Ruff, pip |
-| **Rust** | rust-analyzer | Cargo.toml | Cargo |
-| **Scala** | Metals | build.sbt, build.gradle, pom.xml | sbt, Mill, Gradle, Maven, Scala CLI |
+| Language                   | LSP/Intelligence  | Project System                   | Build Tools                         |
+|----------------------------|-------------------|----------------------------------|-------------------------------------|
+| **C/C++/Objective-C/CUDA** | clangd            | CMake                            | CMake, Make                         |
+| **Gleam**                  | gleam lsp         | gleam.toml                       | Gleam                               |
+| **Go**                     | gopls (built-in)  | go.mod                           | Go                                  |
+| **Groovy**                 | (via Java LSP)    | build.gradle                     | Gradle                              |
+| **Java**                   | (various)         | build.gradle, pom.xml            | Gradle, Maven                       |
+| **Kotlin**                 | (via Java LSP)    | build.gradle                     | Gradle                              |
+| **Lua**                    | LuaLS             | .luarc.json                      | Lua, LuaRocks                       |
+| **Python**                 | python-lsp-server | pyproject.toml, setup.py         | pytest, Ruff, pip                   |
+| **Rust**                   | rust-analyzer     | Cargo.toml                       | Cargo                               |
+| **Scala**                  | Metals            | build.sbt, build.gradle, pom.xml | sbt, Mill, Gradle, Maven, Scala CLI |
+| **Swift**                  | sourcekit-lsp     | Package.swift                    | Swift Package Manager               |
 
 ### Notes:
 - **Java/Kotlin/Groovy** in Gradle projects use the Gradle plugin for build integration
