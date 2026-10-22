@@ -232,10 +232,12 @@ private object SwiftProjectCommandProvider : ProjectCommandProvider {
 
 private const val SWIFT_INSTALL_COMMAND =
     "pacman -S --needed --noconfirm libxml2-legacy curl && " +
+            "ln -sf libncursesw.so.6 /usr/lib/libncurses.so.6 && " +
             "curl -sL https://download.swift.org/swiftly/linux/swiftly-\$(uname -m).tar.gz | tar -xzf - -C /tmp swiftly && " +
             "/tmp/swiftly init --platform ubuntu26.04 --skip-install -y && " +
             "(\"\$HOME/.local/share/swiftly/bin/swiftly\" install latest --no-verify -y 2>/dev/null || true) && " +
-            "ln -sf \"\$HOME\"/.local/share/swiftly/bin/* /usr/bin/"
+            "ln -sf \"\$HOME\"/.local/share/swiftly/toolchains/*/usr/bin/* \"\$HOME\"/.local/share/swiftly/bin/ && " +
+            "ln -sf \"\$HOME\"/.local/share/swiftly/toolchains/*/usr/bin/* /usr/bin/"
 
 private const val SWIFT_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/swift/syntaxes/swift.tmLanguage.json"

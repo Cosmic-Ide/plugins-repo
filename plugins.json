@@ -195,6 +195,6 @@
     "detailedDescription": "## Swift development\n\nBuild and maintain Swift packages with sourcekit-lsp code intelligence, swiftly toolchain management, and integrated Swift Package Manager workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, and refactoring from **sourcekit-lsp**\n- Automatic detection of projects containing `Package.swift`\n- Executable and library package project templates\n- Swift actions for building, running, testing, package updates, and cleaning\n\n### Setup\n\nAfter installation, run **Install Swift toolchain** once to install required system packages (including `libxml2-legacy` and `libncurses`) and configure Swift via Swiftly. Existing Swift packages are recognized when you open their project directory.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/swift-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/swift-support-1.0.0.zip",
-    "sha256": "9e3f6d001fe1cc7102c4b9c84ac10f2f1f281f19d07823adf55f2c99a2781d09"
+    "sha256": "1493a28819c70713ffb0c8fb447e525bfa6aba595ad4789d479a3311d49b0b79"
   }
 ]
