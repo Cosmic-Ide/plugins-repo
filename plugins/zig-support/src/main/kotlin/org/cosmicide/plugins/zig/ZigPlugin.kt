@@ -11,10 +11,13 @@ import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
 import org.cosmicide.plugin.api.plugin
 import org.cosmicide.plugin.api.register
-import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.CommandExecutionService
+import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
 import org.cosmicide.project.OperationMessageKind
+import org.cosmicide.project.OperationReporter
+import org.cosmicide.project.OperationUpdate
+import org.cosmicide.project.PluginFormField
 import org.cosmicide.project.Project
 import org.cosmicide.project.ProjectCommand
 import org.cosmicide.project.ProjectCommandKind
@@ -24,9 +27,6 @@ import org.cosmicide.project.ProjectCreationRequest
 import org.cosmicide.project.ProjectCreationResult
 import org.cosmicide.project.ProjectExtensionPoints
 import org.cosmicide.project.ProjectTypeProvider
-import org.cosmicide.project.OperationReporter
-import org.cosmicide.project.OperationUpdate
-import org.cosmicide.project.PluginFormField
 import org.cosmicide.project.ToolProcessService
 import java.io.File
 import java.io.InputStream
@@ -150,9 +150,10 @@ private class ZlsProvider(
     override fun createDefinition(request: LspServerRequest): LspServerDefinition =
         LspServerDefinition(
             id = id,
-            fileExtensions = setOf("zig"),
+            fileExtensions = setOf("zig", "zon"),
             displayName = "ZLS",
             connectionFactory = { ZlsConnection(processes, it, logger) },
+            textMateGrammarLink = ZIG_TEXTMATE_GRAMMAR,
             enableInlayHints = true,
             enableSignatureHelp = true,
             initializationTimeoutMillis = 120_000
@@ -273,3 +274,5 @@ private val ZIG_INSTALL_COMMAND = """
 """.trimIndent()
 
 private val PROJECT_NAME_REGEX = Regex("[A-Za-z0-9][A-Za-z0-9_-]*")
+private const val ZIG_TEXTMATE_GRAMMAR =
+    "https://raw.githubusercontent.com/ziglang/sublime-zig-language/refs/heads/master/Syntaxes/Zig.tmLanguage.json"

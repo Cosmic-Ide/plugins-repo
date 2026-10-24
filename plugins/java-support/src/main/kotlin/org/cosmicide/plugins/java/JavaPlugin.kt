@@ -37,9 +37,9 @@ class JavaPlugin : CosmicPlugin by plugin(
                     fi
                     . "$HOME/.sdkman/bin/sdkman-init.sh"
                     sdk install java
-                    rm -rf "$pluginDir/jdtls"
-                    mkdir -p "$pluginDir/jdtls"
-                    curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$pluginDir/jdtls"
+                    rm -rf "$$pluginDir/jdtls"
+                    mkdir -p "$$pluginDir/jdtls"
+                    curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$$pluginDir/jdtls"
                 """.trimIndent(),
                 description = "Install Java JDK and Eclipse JDT Language Server."
             )

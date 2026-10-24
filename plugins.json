@@ -8,7 +8,7 @@
     "detailedDescription": "## Zig development\n\nCreate and maintain Zig projects with code intelligence powered by **ZLS** and integrated Zig commands.\n\n### Features\n\n- Completion, diagnostics, navigation, and formatting from **ZLS**\n- Zig executable project template\n- Automatic detection of projects containing `build.zig`\n- Build, run, and test commands using the Zig build system\n\n### Setup\n\nAfter installation, run **Install Zig and ZLS** once.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/zig-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/zig-support-1.0.0.zip",
-    "sha256": "b444d25281a69fce8d95d7de7a39be82b60fd4d1f80970e4044d59a824d4d9d2"
+    "sha256": "5656fee73f53eec878b718abb055566b2b38e92fc400417bb79354d37df98ce1"
   },
   {
     "id": "org.cosmicide.plugins.ant",
@@ -52,7 +52,7 @@
     "detailedDescription": "## Java development\n\nBuild and maintain Java projects with code intelligence powered by Eclipse JDT Language Server.\n\n### Features\n\n- Completion, diagnostics, navigation, refactoring, code actions, and inline assistance from **Eclipse JDT LS**\n- Support for Java source files and common JVM project structures\n- Automatic integration with Gradle and Maven projects\n- Signature help, inlay hints, formatting, and import organization\n\n### Setup\n\nAfter installation, run **Install JDT LS** once. Java support becomes available when you open a project containing Java source files.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/java-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/java-support-1.0.0.zip",
-    "sha256": "fed670c895cd34cc4ad5b2780c754189f1f4c692d7db8aa146084d2f3777d81e"
+    "sha256": "8292d9e83d324249d9bbf8214342a34fba05c44646be4488c28e438c6738a04d"
   },
   {
     "id": "org.cosmicide.plugins.gleam",

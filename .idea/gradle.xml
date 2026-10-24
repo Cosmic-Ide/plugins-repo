@@ -23,6 +23,7 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/plugins" />
             <option value="$PROJECT_DIR$/plugins/android-support" />
+            <option value="$PROJECT_DIR$/plugins/ant-support" />
             <option value="$PROJECT_DIR$/plugins/bun-support" />
             <option value="$PROJECT_DIR$/plugins/clangd-support" />
             <option value="$PROJECT_DIR$/plugins/cmake-support" />
@@ -40,6 +41,7 @@
             <option value="$PROJECT_DIR$/plugins/swift-support" />
             <option value="$PROJECT_DIR$/plugins/vue-support" />
             <option value="$PROJECT_DIR$/plugins/web-support" />
+            <option value="$PROJECT_DIR$/plugins/zig-support" />
           </set>
         </option>
       </GradleProjectSettings>
