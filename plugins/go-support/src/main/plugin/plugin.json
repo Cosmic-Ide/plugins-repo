@@ -3,14 +3,15 @@
   "name": "Go Support",
   "version": "1.0.0",
   "entryClass": "org.cosmicide.plugins.go.GoPlugin",
-  "description": "Go syntax highlighting, module templates, and build, run, test, and dependency workflows.",
-  "detailedDescription": "## Go development\n\nWork with Go modules and workspaces using syntax highlighting, project templates, and integrated Go commands.\n\n### Features\n\n- TextMate syntax highlighting for `.go` files\n- Automatic detection of `go.mod` modules and `go.work` workspaces\n- Application and library project templates\n- Actions for building, running, testing, formatting, and vetting packages\n- Organized module, testing, and maintenance workflows\n\n### Setup\n\nAfter installation, run **Install Go** once. Existing modules and workspaces are recognized when you open their project directory.",
+  "description": "Go language support with gopls, project templates, and integrated Go workflows.",
+  "detailedDescription": "## Go language support\n\nDevelop Go applications and libraries with gopls-powered code intelligence and integrated module workflows.\n\n### Features\n\n- Completion, diagnostics, navigation, formatting, and refactoring from **gopls**\n- Syntax highlighting for Go source files\n- Application and library project templates\n- Automatic detection of `go.mod` modules and `go.work` workspaces\n- Build, run, test, format, vet, and dependency commands\n\n### Setup\n\nRun **Install Go and gopls** to install the Go toolchain and language server. Open a directory containing `go.mod` or `go.work` to activate project support.",
   "author": "Cosmic IDE",
   "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/go-support",
   "classPath": [
     "plugin.apk"
   ],
   "capabilities": [
+    "language-server",
     "syntax-highlighting",
     "project-type",
     "project-creation",

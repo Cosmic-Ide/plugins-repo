@@ -3,8 +3,8 @@
   "name": "Ant Support",
   "version": "1.0.0",
   "entryClass": "org.cosmicide.plugins.ant.AntPlugin",
-  "description": "Ant project detection, target discovery, and integrated build workflows.",
-  "detailedDescription": "## Ant development\n\nBuild and maintain Apache Ant projects with automatic `build.xml` detection and integrated target workflows.\n\n### Features\n\n- Automatic detection of projects containing `build.xml`\n- Build, test, and clean toolbar actions\n- Dynamic discovery of targets from the Ant project\n- Fallback targets for builds that cannot be queried\n\n### Setup\n\nAfter installation, run **Install Ant** once. Ant is installed through the Android SDK package manager (`sdkmanager`).",
+  "description": "Apache Ant project support with Java templates, target discovery, and integrated build actions.",
+  "detailedDescription": "## Ant development\n\nCreate and maintain Apache Ant projects with automatic `build.xml` detection and integrated target workflows.\n\n### Features\n\n- Java application project template with `build.xml`\n- Automatic detection of projects containing `build.xml`\n- Build, test, and clean toolbar actions\n- Dynamic discovery of targets from the Ant project\n\n### Setup\n\nAfter installation, run **Install Ant** once. Java and Apache Ant are installed through SDKMAN.",
   "author": "Cosmic IDE",
   "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/ant-support",
   "classPath": [
@@ -12,6 +12,7 @@
   ],
   "capabilities": [
     "project-type",
+    "project-creation",
     "project-commands",
     "project-tasks"
   ]

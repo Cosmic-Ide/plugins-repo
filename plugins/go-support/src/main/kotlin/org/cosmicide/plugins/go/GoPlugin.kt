@@ -7,8 +7,13 @@ import io.github.rosemoe.sora.langs.textmate.registry.model.DefaultGrammarDefini
 import org.cosmicide.editor.EditorExtensionPoints
 import org.cosmicide.editor.EditorLanguageProvider
 import org.cosmicide.editor.EditorLanguageRequest
+import org.cosmicide.editor.LspServerConnection
+import org.cosmicide.editor.LspServerDefinition
+import org.cosmicide.editor.LspServerProvider
+import org.cosmicide.editor.LspServerRequest
 import org.cosmicide.plugin.api.CosmicPlugin
 import org.cosmicide.plugin.api.PluginContext
+import org.cosmicide.plugin.api.PluginLogger
 import org.cosmicide.plugin.api.PluginSetupAction
 import org.cosmicide.plugin.api.plugin
 import org.cosmicide.plugin.api.register
@@ -30,9 +35,12 @@ import org.cosmicide.project.ProjectCreationRequest
 import org.cosmicide.project.ProjectCreationResult
 import org.cosmicide.project.ProjectExtensionPoints
 import org.cosmicide.project.ProjectTypeProvider
+import org.cosmicide.project.ToolProcessService
 import org.eclipse.tm4e.core.registry.IGrammarSource
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.URL
 
 class GoPlugin : CosmicPlugin by plugin(
@@ -40,18 +48,24 @@ class GoPlugin : CosmicPlugin by plugin(
     setupActions = listOf(
         PluginSetupAction(
             id = "org.cosmicide.plugins.go.installToolchain",
-            label = "Install Go",
+            label = "Install Go and gopls",
             command = GO_INSTALL_COMMAND,
-            description = "Install the Go compiler and toolchain."
+            description = "Install the Go compiler, toolchain, and gopls language server."
         )
     )
 ) {
     override fun activate(context: PluginContext) {
         val commandService = context.services.require(IdeServices.COMMAND_EXECUTION)
+        val processService = context.services.require(IdeServices.TOOL_PROCESS)
 
         context.register(
             point = EditorExtensionPoints.LANGUAGE_PROVIDER,
             extension = GoTextMateLanguageProvider,
+            priority = 350
+        )
+        context.register(
+            point = EditorExtensionPoints.LSP_SERVER_PROVIDER,
+            extension = GoplsProvider(processService, context.logger),
             priority = 350
         )
         context.register(
@@ -70,7 +84,88 @@ class GoPlugin : CosmicPlugin by plugin(
             priority = 350
         )
 
-        context.logger.info("Go syntax, module, and workspace support registered")
+        context.logger.info("Go language, module, and workspace support registered")
+    }
+}
+
+private class GoplsProvider(
+    private val processes: ToolProcessService,
+    private val logger: PluginLogger
+) : LspServerProvider {
+    override val id = "org.cosmicide.plugins.go.lsp"
+    override val displayName = "Go language support"
+    override val description = "Go editing powered by gopls"
+    override val priority = 350
+
+    override fun supports(request: LspServerRequest): Boolean =
+        request.extension.equals("go", ignoreCase = true)
+
+    override fun createDefinition(request: LspServerRequest): LspServerDefinition =
+        LspServerDefinition(
+            id = id,
+            fileExtensions = setOf("go"),
+            displayName = "gopls",
+            connectionFactory = { GoplsConnection(processes, it, logger) },
+            enableInlayHints = true,
+            enableSignatureHelp = true,
+            initializationTimeoutMillis = 120_000
+        )
+}
+
+private class GoplsConnection(
+    private val processes: ToolProcessService,
+    private val request: LspServerRequest,
+    private val logger: PluginLogger
+) : LspServerConnection {
+    @Volatile
+    private var process: Process? = null
+
+    @Synchronized
+    override fun start() {
+        check(process == null) { "gopls connection has already started" }
+        process = processes.start(
+            CommandRequest(
+                command = "gopls",
+                arguments = listOf("serve"),
+                workingDirectory = request.project.root,
+                environment = mapOf("COSMIC_PROJECT_ROOT" to request.project.root.absolutePath)
+            ),
+            redirectErrorStream = false
+        ).also { started ->
+            drainStderr(started.errorStream)
+            logger.info("gopls started for ${request.project.name}")
+        }
+    }
+
+    override val outputStream: OutputStream
+        get() = checkNotNull(process) { "gopls has not started" }.outputStream
+
+    override val inputStream: InputStream
+        get() = checkNotNull(process) { "gopls has not started" }.inputStream
+
+    override val isClosed: Boolean
+        get() = process?.isAlive != true
+
+    @Synchronized
+    override fun close() {
+        val running = process ?: return
+        process = null
+        runCatching { running.outputStream.close() }
+        runCatching { running.inputStream.close() }
+        runCatching { running.errorStream.close() }
+        if (running.isAlive) running.destroy()
+    }
+
+    private fun drainStderr(stderr: InputStream) {
+        Thread {
+            runCatching {
+                stderr.bufferedReader().useLines { lines -> lines.forEach(logger::debug) }
+            }.onFailure { logger.warn("gopls stderr logger stopped", it) }
+        }.apply {
+            name = "Gopls-Stderr"
+            isDaemon = true
+            start()
+        }
     }
 }
 
@@ -458,7 +553,7 @@ private fun String.toGoPackageName(): String {
 
 private val GO_INSTALL_COMMAND = """
     set -e
-    pacman -S --needed --noconfirm gcc-go
+    pacman -S --needed --noconfirm gcc-go gopls
 """.trimIndent()
 private const val GO_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/go/syntaxes/go.tmLanguage.json"

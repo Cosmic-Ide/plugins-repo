@@ -3,7 +3,7 @@
   "name": "JSON Support",
   "version": "1.0.0",
   "entryClass": "org.cosmicide.plugins.json.JSONPlugin",
-  "description": "JSON & JSONC Code Intelligence.",
+  "description": "JSON and JSONC language support with validation, schemas, completion, and formatting.",
   "detailedDescription": "## JSON language support\n\nEdit JSON and JSONC configuration files with real-time validation, auto-completion, schema validation, and formatting powered by **vscode-json-languageserver**.\n\n### Features\n\n- Auto-completion for properties and values\n- Syntax validation and error diagnostics\n- Document formatting and folding ranges\n- Support for standard JSON, JSONC (with comments), and JSON5",
   "author": "Cosmic IDE",
   "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/json-support",

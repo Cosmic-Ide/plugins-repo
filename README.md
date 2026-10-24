@@ -23,10 +23,10 @@ in the repository index and the plugin's bundled `plugin.json` metadata.
   build, test, and task workflows for Java, Kotlin, Groovy, and Scala projects.
 - **Maven Support** — Apache archetypes for Java quickstart, simple JAR, and web projects, a curated
   multi-module template, common commands, and a searchable Maven goal picker
-- **Ant Support** — automatic `build.xml` detection, standard build commands, and searchable Ant
-  target workflows
-- **Zig Support** — ZLS code intelligence, `build.zig` detection, and Zig build, run, and test
-  workflows
+- **Ant Support** — Java project creation, automatic `build.xml` detection, standard build commands,
+  and searchable Ant target workflows
+- **Zig Support** — ZLS code intelligence, Zig executable project creation, `build.zig` detection,
+  and Zig build, run, and test workflows
 - **Scala Support** — Metals code intelligence, sbt application and library templates, build
   commands, and searchable tasks across common Scala build tools
   lifecycle, dependency, plugin-goal, and run commands.
@@ -72,7 +72,7 @@ Clangd Support installs the `clang` package. CMake Support remains independent a
 `cmake` and `make`; its configure commands export `compile_commands.json` for clangd.
 Gradle Support installs `gradle` and uses Cosmic IDE's selected JDK.
 Maven Support installs `maven` and uses Cosmic IDE's selected JDK.
-Ant Support installs the Android SDK `ant` package with `sdkmanager`.
+Ant Support installs Java and `ant` with SDKMAN.
 
 ## Build
 

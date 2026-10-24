@@ -8,6 +8,11 @@ import org.cosmicide.plugin.api.register
 import org.cosmicide.project.CommandExecutionService
 import org.cosmicide.project.CommandRequest
 import org.cosmicide.project.IdeServices
+import org.cosmicide.project.PluginFormField
+import org.cosmicide.project.ProjectCreationProvider
+import org.cosmicide.project.ProjectCreationRequest
+import org.cosmicide.project.ProjectCreationResult
+import org.cosmicide.project.OperationReporter
 import org.cosmicide.project.Project
 import org.cosmicide.project.ProjectCommand
 import org.cosmicide.project.ProjectCommandKind
@@ -25,7 +30,7 @@ class AntPlugin : CosmicPlugin by plugin(
             id = "org.cosmicide.plugins.ant.installAnt",
             label = "Install Ant",
             command = ANT_INSTALL_COMMAND,
-            description = "Install Apache Ant through the Android SDK package manager."
+            description = "Install Java and Apache Ant through SDKMAN."
         )
     )
 ) {
@@ -34,6 +39,11 @@ class AntPlugin : CosmicPlugin by plugin(
         context.register(
             point = ProjectExtensionPoints.TYPE_PROVIDER,
             extension = AntProjectTypeProvider,
+            priority = 350
+        )
+        context.register(
+            point = ProjectExtensionPoints.CREATION_PROVIDER,
+            extension = AntProjectCreationProvider,
             priority = 350
         )
         context.register(
@@ -47,6 +57,53 @@ class AntPlugin : CosmicPlugin by plugin(
             priority = 350
         )
         context.logger.info("Ant project support registered")
+    }
+}
+
+private object AntProjectCreationProvider : ProjectCreationProvider {
+    override val id = "org.cosmicide.plugins.ant.createProject"
+    override val displayName = "New Ant project"
+    override val description = "Create a Java application with an Ant build file"
+    override val actionLabel = "Create"
+    override val fields = listOf(
+        PluginFormField(
+            id = "name",
+            label = "Project name",
+            placeholder = "hello-ant",
+            required = true
+        )
+    )
+
+    override suspend fun create(
+        request: ProjectCreationRequest,
+        reporter: OperationReporter
+    ): ProjectCreationResult {
+        val name = request.values["name"].orEmpty().trim()
+        require(name.matches(PROJECT_NAME_REGEX)) {
+            "Project name may contain letters, numbers, underscores, and hyphens"
+        }
+
+        val projectsRoot = request.projectsDirectory.canonicalFile
+        val root = projectsRoot.resolve(name).canonicalFile
+        require(root.parentFile == projectsRoot) { "Invalid project name" }
+        require(!root.exists()) { "A project with this name already exists" }
+
+        reporter.report(org.cosmicide.project.OperationUpdate("Creating Ant project…\n"))
+        try {
+            check(root.mkdirs()) { "Could not create the project directory" }
+            root.resolve("src/main/java").mkdirs()
+            root.resolve("src/main/java/Main.java").writeText(ANT_MAIN_SOURCE)
+            root.resolve("build.xml").writeText(antBuildFile(name))
+            root.resolve(".gitignore").writeText("build/\ndist/\n")
+        } catch (failure: Throwable) {
+            if (root.exists()) root.deleteRecursively()
+            throw failure
+        }
+
+        return ProjectCreationResult(
+            project = AntProjectTypeProvider.project(root),
+            message = "Ant project created successfully"
+        )
     }
 }
 
@@ -143,19 +200,49 @@ private fun String.commandId(): String =
 
 private val ANT_INSTALL_COMMAND = $$"""
     set -e
-    SDKMANAGER="$(command -v sdkmanager || true)"
-    if [ -z "$SDKMANAGER" ]; then
-        SDKMANAGER="${ANDROID_HOME:-$HOME/Android/sdk}/cmdline-tools/latest/bin/sdkmanager"
+    if [ ! -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+        curl -s "https://get.sdkman.io" | bash
     fi
-    if [ ! -x "$SDKMANAGER" ]; then
-        SDKMANAGER="${ANDROID_HOME:-$HOME/Android/sdk}/tools/bin/sdkmanager"
-    fi
-    if [ ! -x "$SDKMANAGER" ]; then
-        echo "sdkmanager not found. Install Android Command Line Tools first." >&2
-        exit 1
-    fi
-    yes | "$SDKMANAGER" --licenses >/dev/null || true
-    "$SDKMANAGER" "ant"
+    . "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk install java
+    sdk install ant
 """.trimIndent()
 
 private val TARGET_LINE_REGEX = Regex("""^([A-Za-z0-9_.-]+)\s*(?:.*)$""")
+private val PROJECT_NAME_REGEX = Regex("[A-Za-z0-9][A-Za-z0-9_-]*")
+private val ANT_MAIN_SOURCE = """
+    public final class Main {
+        private Main() {}
+
+        public static void main(String[] args) {
+            System.out.println("Hello from Ant!");
+        }
+    }
+""".trimIndent() + "\n"
+
+private fun antBuildFile(projectName: String) = $$"""
+    <?xml version="1.0" encoding="UTF-8"?>
+    <project name="$$projectName" default="jar" basedir=".">
+        <property name="src.dir" value="src/main/java"/>
+        <property name="build.dir" value="build"/>
+        <property name="classes.dir" value="${build.dir}/classes"/>
+        <property name="dist.dir" value="dist"/>
+
+        <target name="clean">
+            <delete dir="${build.dir}"/>
+            <delete dir="${dist.dir}"/>
+        </target>
+
+        <target name="compile">
+            <mkdir dir="${classes.dir}"/>
+            <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false"/>
+        </target>
+
+        <target name="test" depends="compile"/>
+
+        <target name="jar" depends="compile">
+            <mkdir dir="${dist.dir}"/>
+            <jar destfile="${dist.dir}/$projectName.jar" basedir="${classes.dir}"/>
+        </target>
+    </project>
+""".trimIndent() + "\n"

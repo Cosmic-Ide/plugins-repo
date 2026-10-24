@@ -3,7 +3,7 @@
   "name": "Gleam Support",
   "version": "1.0.0",
   "entryClass": "org.cosmicide.plugins.gleam.GleamPlugin",
-  "description": "Gleam code intelligence, project templates, and complete build and package workflows.",
+  "description": "Gleam language support with project templates, package management, and build workflows.",
   "detailedDescription": "## Gleam development\n\nCreate and maintain Gleam applications and libraries with language intelligence and integrated Gleam tooling.\n\n### Features\n\n- Completion, diagnostics, navigation, and inline assistance from **gleam lsp**\n- Automatic detection of projects containing `gleam.toml`\n- Project templates for Erlang and JavaScript targets\n- Actions for checking, compiling, running, testing, formatting, and dependency updates\n- Organized workflows for documentation, exports, fixes, and package publishing\n\n### Setup\n\nAfter installation, run **Install Gleam** once. Existing Gleam projects are recognized when you open their project directory.",
   "author": "Cosmic IDE",
   "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/gleam-support",

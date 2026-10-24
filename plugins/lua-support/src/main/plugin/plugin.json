@@ -3,7 +3,7 @@
   "name": "Lua Support",
   "version": "1.0.0",
   "entryClass": "org.cosmicide.plugins.lua.LuaPlugin",
-  "description": "LuaLS code intelligence, Lua project templates, formatting, linting, and LuaRocks workflows.",
+  "description": "Lua language support with LuaLS, project templates, formatting, linting, and LuaRocks integration.",
   "detailedDescription": "## Lua development\n\nDevelop Lua applications and modules with LuaLS intelligence and a practical set of quality tools.\n\n### Features\n\n- Completion, diagnostics, navigation, annotations, and formatting from **LuaLS**\n- TextMate syntax highlighting for `.lua` files\n- Application and module project templates with LuaLS and StyLua configuration\n- Actions for running code, opening a REPL, checking syntax, formatting, and linting\n- LuaRocks dependency inspection\n\n### Setup\n\nAfter installation, run **Install Lua tools** once. Projects with Lua source files or `.luarc.json` configuration are recognized automatically.",
   "author": "Cosmic IDE",
   "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/lua-support",
