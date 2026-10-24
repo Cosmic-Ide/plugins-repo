@@ -8,7 +8,7 @@
     "detailedDescription": "## Zig development\n\nCreate and maintain Zig projects with code intelligence powered by **ZLS** and integrated Zig commands.\n\n### Features\n\n- Completion, diagnostics, navigation, and formatting from **ZLS**\n- Zig executable project template\n- Automatic detection of projects containing `build.zig`\n- Build, run, and test commands using the Zig build system\n\n### Setup\n\nAfter installation, run **Install Zig and ZLS** once.",
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/zig-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/zig-support-1.0.0.zip",
-    "sha256": "5656fee73f53eec878b718abb055566b2b38e92fc400417bb79354d37df98ce1"
+    "sha256": "d9dc862093f5c8869ac87a6952527d7169cc78f5fb7ddccc1266813d17c6f4fa"
   },
   {
     "id": "org.cosmicide.plugins.ant",
@@ -218,5 +218,16 @@
     "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/swift-support",
     "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/swift-support-1.0.0.zip",
     "sha256": "27bfc79827d725f824e1ca9662515c61013fe966ae31b4e54533de32cba3b638"
+  },
+  {
+    "id": "org.cosmicide.plugins.diff",
+    "name": "Diff Support",
+    "version": "1.0.0",
+    "author": "Cosmic IDE",
+    "description": "Diff and patch file support with syntax highlighting and GitHub-style previews.",
+    "detailedDescription": "## Diff and patch support\n\nReview unified diff files with familiar syntax highlighting and a readable, GitHub-style side-by-side-inspired preview.\n\n### Features\n\n- TextMate syntax highlighting for `.diff` and `.patch` files\n- Additions, deletions, context, file headers, and hunk headers are visually distinguished\n- Scrollable preview with old and new line numbers\n- No external language server required",
+    "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/diff-support",
+    "downloadUrl": "https://raw.githubusercontent.com/Cosmic-Ide/plugins-repo/main/artifacts/diff-support-1.0.0.zip",
+    "sha256": "4dd18771b73916f5ecc50ff70a1eff6d7f9fb2ac09421dd73b0086db64b4e488"
   }
 ]

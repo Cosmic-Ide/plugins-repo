@@ -27,6 +27,8 @@ in the repository index and the plugin's bundled `plugin.json` metadata.
   and searchable Ant target workflows
 - **Zig Support** — ZLS code intelligence, Zig executable project creation, `build.zig` detection,
   and Zig build, run, and test workflows
+- **Diff Support** — TextMate syntax highlighting and GitHub-style previews for unified diff and
+  patch files
 - **Scala Support** — Metals code intelligence, sbt application and library templates, build
   commands, and searchable tasks across common Scala build tools
   lifecycle, dependency, plugin-goal, and run commands.
@@ -52,6 +54,7 @@ The Cosmic IDE plugins provide support for the following languages:
 | **Rust**                   | rust-analyzer     | Cargo.toml                       | Cargo                               |
 | **Scala**                  | Metals            | build.sbt, build.gradle, pom.xml | sbt, Mill, Gradle, Maven, Scala CLI |
 | **Swift**                  | sourcekit-lsp     | Package.swift                    | Swift Package Manager               |
+| **Diff/Patch**             | —                 | `.diff`, `.patch`                | —                                   |
 
 ### Notes:
 - **Java/Kotlin/Groovy** in Gradle projects use the Gradle plugin for build integration
@@ -73,6 +76,7 @@ Clangd Support installs the `clang` package. CMake Support remains independent a
 Gradle Support installs `gradle` and uses Cosmic IDE's selected JDK.
 Maven Support installs `maven` and uses Cosmic IDE's selected JDK.
 Ant Support installs Java and `ant` with SDKMAN.
+Diff Support provides syntax highlighting and preview rendering without an LSP.
 
 ## Build
 

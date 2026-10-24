@@ -1,0 +1,17 @@
+{
+  "id": "org.cosmicide.plugins.diff",
+  "name": "Diff Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.diff.DiffPlugin",
+  "description": "Diff and patch file support with syntax highlighting and GitHub-style previews.",
+  "detailedDescription": "## Diff and patch support\n\nReview unified diff files with familiar syntax highlighting and a readable, GitHub-style side-by-side-inspired preview.\n\n### Features\n\n- TextMate syntax highlighting for `.diff` and `.patch` files\n- Additions, deletions, context, file headers, and hunk headers are visually distinguished\n- Scrollable preview with old and new line numbers\n- No external language server required",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/diff-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "syntax-highlighting",
+    "preview"
+  ]
+}

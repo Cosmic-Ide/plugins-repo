@@ -1,0 +1,68 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.compiler)
+}
+
+android {
+    namespace = "org.cosmicide.plugins.diff"
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 2
+        }
+    }
+
+    defaultConfig {
+        applicationId = "org.cosmicide.plugins.diff"
+        minSdk = 28
+        targetSdk = 37
+        versionCode = 1
+        versionName = "1.0.0"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            vcsInfo.include = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+        }
+        create("prod") {
+            dimension = "environment"
+            isDefault = true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        compose = true
+    }
+}
+
+dependencies {
+    compileOnly("org.invokevirtual.cosmicide:ide-api:3.0.1-SNAPSHOT")
+    compileOnly(kotlin("stdlib"))
+    compileOnly("androidx.activity:activity-compose:1.13.0")
+    compileOnly("androidx.compose.material3:material3:1.5.0-beta02")
+}
+
+configurations.named("implementation") {
+    withDependencies {
+        removeIf {
+            it.group == "org.jetbrains.kotlin" && it.name == "kotlin-stdlib"
+        }
+    }
+}

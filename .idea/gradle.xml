@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$/plugins/bun-support" />
             <option value="$PROJECT_DIR$/plugins/clangd-support" />
             <option value="$PROJECT_DIR$/plugins/cmake-support" />
+            <option value="$PROJECT_DIR$/plugins/diff-support" />
             <option value="$PROJECT_DIR$/plugins/gleam-support" />
             <option value="$PROJECT_DIR$/plugins/go-support" />
             <option value="$PROJECT_DIR$/plugins/gradle-support" />
