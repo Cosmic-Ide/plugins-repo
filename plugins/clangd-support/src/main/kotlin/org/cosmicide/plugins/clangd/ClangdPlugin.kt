@@ -12,7 +12,10 @@ class ClangdPlugin : CosmicPlugin by plugin(
         PluginSetupAction(
             id = "org.cosmicide.plugins.clangd.installToolchain",
             label = "Install Clang tools",
-            command = "pacman -S --needed clang",
+            command = """
+                set -e
+                pacman -S --needed --noconfirm clang
+            """.trimIndent(),
             description = "Install Clang and the clangd language server."
         )
     )

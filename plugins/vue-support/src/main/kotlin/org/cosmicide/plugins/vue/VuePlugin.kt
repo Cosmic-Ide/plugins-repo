@@ -12,7 +12,10 @@ class VuePlugin : CosmicPlugin by plugin(
         PluginSetupAction(
             id = "org.cosmicide.plugins.vue.installToolchain",
             label = "Install Vue Language Server",
-            command = "pacman -S --needed vue-language-server",
+            command = """
+                set -e
+                pacman -S --needed --noconfirm vue-language-server
+            """.trimIndent(),
             description = "Install vue-language-server using pacman."
         )
     )

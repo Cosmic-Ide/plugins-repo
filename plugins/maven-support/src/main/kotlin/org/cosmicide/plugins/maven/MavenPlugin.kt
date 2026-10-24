@@ -871,7 +871,15 @@ private fun mavenPluginPrefix(artifactId: String): String {
     }
 }
 
-private const val MAVEN_INSTALL_COMMAND = "pacman -S --needed maven"
+private val MAVEN_INSTALL_COMMAND = $$"""
+    set -e
+    if [ ! -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+        curl -s "https://get.sdkman.io" | bash
+    fi
+    . "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk install java
+    sdk install maven
+""".trimIndent()
 private const val MAVEN_ARCHETYPE_GENERATE_GOAL =
     "org.apache.maven.plugins:maven-archetype-plugin:3.4.1:generate"
 private const val MAVEN_ARCHETYPE_GROUP = "org.apache.maven.archetypes"

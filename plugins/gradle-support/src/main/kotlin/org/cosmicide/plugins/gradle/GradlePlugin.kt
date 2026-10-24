@@ -783,8 +783,15 @@ private fun String.commandId(): String {
     return "$readable.${hashCode().toUInt().toString(16)}"
 }
 
-private const val GRADLE_INSTALL_COMMAND =
-    "pacman -S --needed which && pacman -U --noconfirm --config <(echo -e \"[options]\\nSigLevel = Never\") https://archlinux.org/packages/extra/any/gradle/download/"
+private val GRADLE_INSTALL_COMMAND = $$"""
+    set -e
+    if [ ! -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+        curl -s "https://get.sdkman.io" | bash
+    fi
+    . "$HOME/.sdkman/bin/sdkman-init.sh"
+    sdk install java
+    sdk install gradle
+""".trimIndent()
 private const val GRADLE_COMMAND = "gradle"
 
 private val GRADLE_PROJECT_TYPES = listOf(

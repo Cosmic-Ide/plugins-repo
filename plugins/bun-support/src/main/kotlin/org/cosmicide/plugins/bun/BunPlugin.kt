@@ -400,5 +400,13 @@ private object BunProjectCommandProvider : ProjectCommandProvider {
     }
 }
 
-private const val INSTALL_COMMAND =
-    "curl -fsSL https://bun.com/install | bash && source ~/.bash_profile && bun upgrade --canary"
+private val INSTALL_COMMAND = $$"""
+    set -e
+    curl -fsSL https://bun.com/install | bash
+    if [ -f "$HOME/.bash_profile" ]; then
+        . "$HOME/.bash_profile"
+    elif [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+    command -v bun >/dev/null 2>&1 && bun upgrade --canary || true
+""".trimIndent()

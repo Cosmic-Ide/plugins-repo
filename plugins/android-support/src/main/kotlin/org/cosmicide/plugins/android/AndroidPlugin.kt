@@ -665,22 +665,35 @@ private class AndroidSettingsUiProvider(private val commands: CommandExecutionSe
 }
 
 private val INSTALL_COMMAND = $$"""
-mkdir -p ~/Android/sdk && \
-curl -L https://dl.google.com/android/repository/commandlinetools-linux-15859902_latest.zip -o /tmp/cmdline-tools.zip && \
-unzip /tmp/cmdline-tools.zip -d /tmp/android-sdk-tools && \
-mkdir -p ~/Android/sdk/cmdline-tools/latest && \
-cp -r /tmp/android-sdk-tools/cmdline-tools/* ~/Android/sdk/cmdline-tools/latest/ && \
-rm -rf /tmp/android-sdk-tools /tmp/cmdline-tools.zip && \
-(grep -q "ANDROID_HOME" ~/.bash_profile || (echo 'export ANDROID_HOME=$HOME/Android/sdk' >> ~/.bash_profile && echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin' >> ~/.bash_profile)) && \
-export ANDROID_HOME=$HOME/Android/sdk && \
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin && \
-curl -fsSL https://raw.githubusercontent.com/Commit451/android-arm-build-tools/main/install.sh -o $ANDROID_HOME/install.sh && \
-chmod +x $ANDROID_HOME/install.sh && \
-sdkmanager --licenses && \
-sdkmanager "build-tools;37.0.0" && \
-$ANDROID_HOME/install.sh --version 37.0.0 && \
-touch "$ANDROID_HOME/build-tools/37.0.0/.patched" && \
-mkdir -p ~/.gradle &&
-(sed -i '/^android\.aapt2FromMavenOverride=/d' ~/.gradle/gradle.properties 2>/dev/null || true) &&
-echo "android.aapt2FromMavenOverride=$ANDROID_HOME/build-tools/37.0.0/aapt2" >> ~/.gradle/gradle.properties
+set -e
+SDK_DIR="$HOME/Android/sdk"
+mkdir -p "${SDK_DIR}"
+
+TMP_DIR="$(mktemp -d)"
+trap 'rm -rf "$TMP_DIR"' EXIT
+
+curl -L https://dl.google.com/android/repository/commandlinetools-linux-15859902_latest.zip -o "${TMP_DIR}/cmdline-tools.zip"
+unzip -q "${TMP_DIR}/cmdline-tools.zip" -d "${TMP_DIR}/android-sdk-tools"
+mkdir -p "${SDK_DIR}/cmdline-tools/latest"
+cp -r "${TMP_DIR}/android-sdk-tools/cmdline-tools"/* "${SDK_DIR}/cmdline-tools/latest/"
+
+grep -q "ANDROID_HOME" "$HOME/.bash_profile" 2>/dev/null || {
+    echo 'export ANDROID_HOME=$HOME/Android/sdk' >> "$HOME/.bash_profile"
+    echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin' >> "$HOME/.bash_profile"
+}
+
+export ANDROID_HOME="${SDK_DIR}"
+export PATH="$PATH:${ANDROID_HOME}/cmdline-tools/latest/bin"
+
+curl -fsSL https://raw.githubusercontent.com/Commit451/android-arm-build-tools/main/install.sh -o "${ANDROID_HOME}/install.sh"
+chmod +x "${ANDROID_HOME}/install.sh"
+
+yes | sdkmanager --licenses >/dev/null || true
+sdkmanager "build-tools;37.0.0"
+"${ANDROID_HOME}/install.sh" --version 37.0.0
+touch "${ANDROID_HOME}/build-tools/37.0.0/.patched"
+
+mkdir -p "$HOME/.gradle"
+sed -i '/^android\.aapt2FromMavenOverride=/d' "$HOME/.gradle/gradle.properties" 2>/dev/null || true
+echo "android.aapt2FromMavenOverride=${ANDROID_HOME}/build-tools/37.0.0/aapt2" >> "$HOME/.gradle/gradle.properties"
 """.trimIndent()

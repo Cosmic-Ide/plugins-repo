@@ -469,8 +469,17 @@ private val PYTHON_PROJECT_MARKERS = setOf(
     "Pipfile",
     "poetry.lock"
 )
-private const val PYTHON_INSTALL_COMMAND =
-    "pacman -S --needed python python-lsp-server python-lsp-black ruff python-pytest python-build python-pip"
+private val PYTHON_INSTALL_COMMAND = """
+    set -e
+    pacman -S --needed --noconfirm \
+        python \
+        python-lsp-server \
+        python-lsp-black \
+        ruff \
+        python-pytest \
+        python-build \
+        python-pip
+""".trimIndent()
 private const val PYTHON_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/refs/heads/main/extensions/python/syntaxes/MagicPython.tmLanguage.json"
 private val PYTHON_APPLICATION_TEMPLATE = """

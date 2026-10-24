@@ -379,8 +379,10 @@ private object LuaProjectCommandProvider : ProjectCommandProvider {
     )
 }
 
-private const val LUA_INSTALL_COMMAND =
-    "pacman -S --needed lua lua-language-server stylua luarocks luacheck"
+private val LUA_INSTALL_COMMAND = """
+    set -e
+    pacman -S --needed --noconfirm lua lua-language-server stylua luarocks luacheck
+""".trimIndent()
 private const val LUA_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/lua/syntaxes/lua.tmLanguage.json"
 private val LUA_CONFIG_TEMPLATE = """

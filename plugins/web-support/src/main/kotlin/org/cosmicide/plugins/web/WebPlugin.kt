@@ -406,8 +406,17 @@ private class WebServerConnection(
     }
 }
 
-private const val INSTALL_COMMAND =
-    "pacman -S --needed nodejs npm yarn typescript typescript-language-server vscode-css-languageserver vscode-html-languageserver"
+private val INSTALL_COMMAND = """
+    set -e
+    pacman -S --needed --noconfirm \
+        nodejs \
+        npm \
+        yarn \
+        typescript \
+        typescript-language-server \
+        vscode-css-languageserver \
+        vscode-html-languageserver
+""".trimIndent()
 
 private val SUPPORTED_FILE_EXTENSIONS =
     setOf("js", "mjs", "cjs", "jsx", "ts", "mts", "cts", "tsx", "css")

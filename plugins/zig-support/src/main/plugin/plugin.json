@@ -1,0 +1,18 @@
+{
+  "id": "org.cosmicide.plugins.zig",
+  "name": "Zig Support",
+  "version": "1.0.0",
+  "entryClass": "org.cosmicide.plugins.zig.ZigPlugin",
+  "description": "Zig code intelligence powered by ZLS with integrated Zig build workflows.",
+  "detailedDescription": "## Zig development\n\nBuild and maintain Zig projects with code intelligence powered by **ZLS** and integrated Zig commands.\n\n### Features\n\n- Completion, diagnostics, navigation, and formatting from **ZLS**\n- Automatic detection of projects containing `build.zig`\n- Build, run, and test commands using the Zig build system\n\n### Setup\n\nAfter installation, run **Install Zig and ZLS** once.",
+  "author": "Cosmic IDE",
+  "source": "https://github.com/Cosmic-Ide/plugins-repo/tree/main/plugins/zig-support",
+  "classPath": [
+    "plugin.apk"
+  ],
+  "capabilities": [
+    "language-server",
+    "project-type",
+    "project-commands"
+  ]
+}

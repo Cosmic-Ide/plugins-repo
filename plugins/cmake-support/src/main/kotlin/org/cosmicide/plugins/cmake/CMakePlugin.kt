@@ -404,7 +404,10 @@ internal fun cmakeExecutableTargets(projectRoot: File): List<CMakeExecutableTarg
         .toList()
 }
 
-private const val CMAKE_INSTALL_COMMAND = "pacman -S --needed cmake make"
+private val CMAKE_INSTALL_COMMAND = """
+    set -e
+    pacman -S --needed --noconfirm cmake make
+""".trimIndent()
 private val CMAKE_SCAN_EXCLUDED_DIRECTORIES = setOf(
     ".git",
     ".gradle",

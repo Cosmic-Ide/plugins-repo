@@ -456,7 +456,10 @@ private fun String.toGoPackageName(): String {
     return normalized.takeIf { it.firstOrNull()?.isLetter() == true } ?: "project"
 }
 
-private const val GO_INSTALL_COMMAND = "pacman -S --needed gcc-go"
+private val GO_INSTALL_COMMAND = """
+    set -e
+    pacman -S --needed --noconfirm gcc-go
+""".trimIndent()
 private const val GO_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/go/syntaxes/go.tmLanguage.json"
 private const val GO_TEXTMATE_SCOPE = "source.go"

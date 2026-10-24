@@ -30,8 +30,18 @@ class JavaPlugin : CosmicPlugin by plugin(
             PluginSetupAction(
                 id = "org.cosmicide.plugins.java.installLSP",
                 label = "Install Java LSP",
-                command = """rm -rf "$pluginDir/jdtls" && mkdir -p "$pluginDir/jdtls" && curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$pluginDir/jdtls"""",
-                description = "Install Eclipse JDT Language Server."
+                command = $$"""
+                    set -e
+                    if [ ! -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+                        curl -s "https://get.sdkman.io" | bash
+                    fi
+                    . "$HOME/.sdkman/bin/sdkman-init.sh"
+                    sdk install java
+                    rm -rf "$pluginDir/jdtls"
+                    mkdir -p "$pluginDir/jdtls"
+                    curl -fL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | unpigz | tar -x -C "$pluginDir/jdtls"
+                """.trimIndent(),
+                description = "Install Java JDK and Eclipse JDT Language Server."
             )
         )
 

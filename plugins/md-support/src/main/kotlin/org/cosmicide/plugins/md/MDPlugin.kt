@@ -12,7 +12,10 @@ class MDPlugin : CosmicPlugin by plugin(
         PluginSetupAction(
             id = "org.cosmicide.plugins.md.installToolchain",
             label = "Install markdown-oxide LSP",
-            command = "pacman -S markdown-oxide",
+            command = """
+                set -e
+                pacman -S --needed --noconfirm markdown-oxide
+            """.trimIndent(),
             description = "Install markdown-oxide language server for Markdown."
         )
     )

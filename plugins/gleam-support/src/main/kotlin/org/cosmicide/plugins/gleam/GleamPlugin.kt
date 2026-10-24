@@ -436,6 +436,9 @@ private object GleamProjectCommandProvider : ProjectCommandProvider {
     )
 }
 
-private const val GLEAM_INSTALL_COMMAND = "pacman -S --needed gleam"
+private val GLEAM_INSTALL_COMMAND = """
+    set -e
+    pacman -S --needed --noconfirm gcc gleam
+""".trimIndent()
 private const val GLEAM_TEXTMATE_GRAMMAR =
     "https://raw.githubusercontent.com/gleam-lang/vscode-gleam/refs/heads/main/syntaxes/gleam.tmLanguage.json"

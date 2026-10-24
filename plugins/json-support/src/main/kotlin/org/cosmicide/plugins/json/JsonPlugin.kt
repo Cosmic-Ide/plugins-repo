@@ -12,7 +12,10 @@ class JSONPlugin : CosmicPlugin by plugin(
         PluginSetupAction(
             id = "org.cosmicide.plugins.json.installToolchain",
             label = "Install JSON language server",
-            command = "pacman -S --needed vscode-json-languageserver",
+            command = """
+                set -e
+                pacman -S --needed --noconfirm vscode-json-languageserver
+            """.trimIndent(),
             description = "Install Node.js and vscode-json-languageserver."
         )
     )
